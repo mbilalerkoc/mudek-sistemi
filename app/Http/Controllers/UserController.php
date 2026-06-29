@@ -15,4 +15,10 @@ class UserController extends Controller
     {
         return view('user.profile');
     }
+
+    public function dersler()
+{
+    // resources/views/user/dersler.blade.php dosyasını çağırır
+    return view('user.dersler');
+}
 }

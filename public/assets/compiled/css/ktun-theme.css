@@ -1,0 +1,314 @@
+/* ================================================
+   KTÜN TEMA - Konya Teknik Üniversitesi
+   Renk Paleti: Bordo + Gri + Beyaz
+================================================ */
+
+:root {
+    --ktun-primary:      #00acc1;
+    --ktun-primary-light: #1abc9c;
+    --ktun-primary-dark: rgba(0, 172, 193, .25);
+    --ktun-navbar-bg:    #5a6a7a;
+    --ktun-sidebar-w:    185px;
+    --ktun-navbar-h:     55px;
+    --ktun-bg:           #f0f2f5;
+    --ktun-text:         #39424e;
+    --ktun-border:       #e0e4e8;
+    --ktun-sidebar-text: #444;
+    --ktun-sidebar-title:#888;
+}
+
+/* ================================================
+   RESET & BODY
+================================================ */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background: var(--ktun-bg);
+    color: var(--ktun-text);
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 0.9rem;
+}
+
+/* ================================================
+   WRAPPER
+================================================ */
+#wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* ================================================
+   NAVBAR - tam genişlik üstte
+================================================ */
+.ktun-navbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--ktun-navbar-h);
+    background: var(--ktun-navbar-bg);
+    z-index: 1000;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}
+
+.ktun-navbar-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    padding: 0 1rem;
+}
+
+.ktun-navbar-left { display: flex; align-items: center; gap: 1rem; }
+.ktun-navbar-right { display: flex; align-items: center; gap: 0.75rem; }
+
+.ktun-burger {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 1.6rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+}
+
+.ktun-nav-icon {
+    color: #fff;
+    font-size: 1.1rem;
+    text-decoration: none;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.ktun-nav-icon:hover { color: #ddd; }
+
+.ktun-nav-username {
+    font-size: 0.82rem;
+    color: #fff;
+}
+
+.ktun-badge {
+    position: absolute;
+    top: -5px; right: -6px;
+    background: var(--ktun-primary);
+    color: #fff;
+    font-size: 0.6rem;
+    width: 15px; height: 15px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ktun-avatar img {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255,255,255,0.4);
+}
+
+/* ================================================
+   SIDEBAR - navbar altından başlar, sol tam yükseklik
+================================================ */
+#ktun-sidebar {
+    position: fixed;
+    top: var(--ktun-navbar-h);
+    left: 0;
+    width: var(--ktun-sidebar-w);
+    height: calc(100vh - var(--ktun-navbar-h));
+    background: #fff;
+    border-right: 1px solid var(--ktun-border);
+    overflow-y: auto;
+    z-index: 999;
+    transition: width 0.25s ease;
+}
+
+#ktun-sidebar.collapsed {
+    width: 0;
+    overflow: hidden;
+}
+
+/* Sidebar profil alanı */
+.ktun-sidebar-profile {
+    padding: 1.2rem 1rem 1rem;
+    border-bottom: 1px solid var(--ktun-border);
+    text-align: center;
+}
+
+.ktun-sidebar-avatar img {
+    width: 70px; height: 70px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--ktun-border);
+    margin-bottom: 0.5rem;
+}
+
+.ktun-sidebar-username {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--ktun-text);
+}
+
+.ktun-sidebar-meta {
+    font-size: 0.75rem;
+    color: #888;
+    margin-top: 2px;
+}
+
+/* Sidebar menü */
+.ktun-sidebar-menu { padding: 0.5rem 0; }
+
+.ktun-menu { list-style: none; }
+
+.ktun-menu-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--ktun-sidebar-title);
+    letter-spacing: 0.05em;
+    padding: 0.75rem 1rem 0.3rem;
+    text-transform: uppercase;
+}
+
+.ktun-menu-item > a,
+.ktun-menu-item > form > .ktun-logout-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 1rem;
+    color: var(--ktun-sidebar-text);
+    text-decoration: none;
+    font-size: 0.85rem;
+    border-radius: 0;
+    transition: background 0.15s;
+    width: 100%;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+}
+
+.ktun-menu-item > a:hover,
+.ktun-menu-item > form > .ktun-logout-btn:hover {
+    background: #f0f2f5;
+    color: var(--ktun-primary);
+}
+
+.ktun-menu-item.active > a {
+    background: #e8edf2;
+    color: var(--ktun-primary);
+    font-weight: 600;
+    border-left: 3px solid var(--ktun-primary);
+}
+
+.ktun-menu-item i {
+    font-size: 1rem;
+    width: 18px;
+    text-align: center;
+}
+
+.ktun-menu-item.active i {
+    color: var(--ktun-primary);
+}
+
+/* ================================================
+   ANA İÇERİK
+================================================ */
+#ktun-main {
+    margin-top: var(--ktun-navbar-h);
+    margin-left: var(--ktun-sidebar-w);
+    min-height: calc(100vh - var(--ktun-navbar-h));
+    display: flex;
+    flex-direction: column;
+    transition: margin-left 0.25s ease;
+}
+
+#ktun-main.expanded {
+    margin-left: 0;
+}
+
+#ktun-content {
+    flex: 1;
+    padding: 1.5rem;
+}
+
+/* ================================================
+   FOOTER
+================================================ */
+.ktun-footer {
+    border-top: 1px solid var(--ktun-border);
+    background: #fff;
+    color: #888;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.8rem;
+}
+
+/* ================================================
+   KART
+================================================ */
+.card {
+    border: none;
+    border-radius: 6px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+}
+
+.card-header {
+    background: #fff;
+    border-bottom: 2px solid var(--ktun-primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* ================================================
+   TABLO
+================================================ */
+.table thead th {
+    background: #d7ece8 !important;
+    color: #47515b;
+    font-weight: 600;
+    border-color: #c9ded9;
+    font-size: 0.85rem;
+}
+
+.table tbody td {
+    vertical-align: middle;
+    font-size: 0.85rem;
+}
+
+/* ================================================
+   BUTONLAR
+================================================ */
+.btn-primary {
+    background: var(--ktun-primary) !important;
+    border-color: var(--ktun-primary) !important;
+}
+.btn-primary-light {
+    background: var(--ktun-primary-light) !important;
+    border-color: var(--ktun-primary-light) !important;
+}
+
+.btn-primary:hover {
+    background: var(--ktun-primary-dark) !important;
+    border-color: var(--ktun-primary-dark) !important;
+}
+
+a { color: var(--ktun-primary); }
+a:hover { color: var(--ktun-primary-dark); }
+
+.bg-primary { background: var(--ktun-primary) !important; }
+
+/* ================================================
+   PAGE HEADING
+================================================ */
+.page-heading {
+    padding: 0 0 1rem 0;
+    border-bottom: 2px solid var(--ktun-primary);
+    margin-bottom: 1.5rem;
+}
+
+.page-heading h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--ktun-text);
+    margin: 0;
+}

@@ -24,4 +24,5 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
 Route::prefix('user')->middleware(['auth'])->group(function () {
     Route::get('/dashboard', [UserController::class, 'index'])->name('user.dashboard');
     Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
+    Route::get('/dersler', [UserController::class, 'dersler'])->name('user.dersler');
 });

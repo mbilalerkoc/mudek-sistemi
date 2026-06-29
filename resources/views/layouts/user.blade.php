@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{{ asset('assets/compiled/css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/compiled/css/app-dark.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/compiled/css/iconly.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/ktun-tema.css') }}">
 </head>
 <body>
     <script src="{{ asset('assets/static/js/initTheme.js') }}"></script>
