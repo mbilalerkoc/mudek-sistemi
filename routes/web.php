@@ -30,3 +30,4 @@ Route::prefix('user')->middleware(['auth'])->group(function () {
 
 Route::get('/user/dersler', [DersController::class, 'index'])->name('user.dersler');
 Route::post('/user/dersler/kaydet', [DersController::class, 'katkilariniKaydet'])->name('ders.katki.kaydet');
+Route::get('/user/dersler/{id}/form', [DersController::class, 'formGoster'])->name('ders.form.goster');

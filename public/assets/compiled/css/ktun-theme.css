@@ -170,6 +170,7 @@ body {
     color: var(--ktun-sidebar-text);
     text-decoration: none;
     font-size: 0.85rem;
+    font-weight: 500;
     border-radius: 0;
     transition: background 0.15s;
     width: 100%;
@@ -305,4 +306,66 @@ a:hover { color: var(--ktun-primary-dark); }
     font-weight: 700;
     color: var(--ktun-text);
     margin: 0;
+}
+/* Sidebar ve Ana İçerik için Yumuşak Geçiş (Animasyon) */
+#ktun-sidebar, #ktun-main, .ktun-navbar {
+    transition: all 0.3s ease-in-out;
+}
+
+/* =========================================
+   DARALTILMIŞ MENÜ (COLLAPSED) KODLARI
+   ========================================= */
+
+/* 1. Sidebar Genişliğini Küçült */
+body.sidebar-collapsed #ktun-sidebar {
+    width: 70px !important; /* İkonların sığacağı dar genişlik */
+    overflow: hidden;
+}
+
+/* 2. Ana İçeriği Sola Çek (Boşluğu doldur) */
+body.sidebar-collapsed #ktun-main {
+    margin-left: 70px !important;
+}
+
+/* 3. Menü Yazılarını, Başlıkları ve Profil Kısmını Gizle */
+body.sidebar-collapsed .ktun-menu-item > a span, 
+body.sidebar-collapsed .ktun-menu-item > form > .ktun-logout-btn span,
+body.sidebar-collapsed .ktun-menu-title,
+body.sidebar-collapsed .ktun-sidebar-profile {
+    display: none !important;
+}
+
+/* Menü listesinin (ul) varsa varsayılan sol boşluğunu sıfırla */
+.ktun-menu {
+    padding-left: 0 !important;
+}
+
+/* 4. İkonları Tam Ortala ve Biraz Büyüt */
+body.sidebar-collapsed .ktun-menu-item > a,
+body.sidebar-collapsed .ktun-menu-item > form > .ktun-logout-btn {
+    justify-content: center !important; /* Flex içeriğini ortalar */
+    padding: 0.8rem 0; /* Üstten alttan boşluk bırakır */
+    padding-left: 0 !important; /* İkonu sağa iten sol boşluğu ezer */
+    padding-right: 0 !important;
+    gap: 0 !important; /* Varsa ikon-yazı boşluğunu sıfırlar */
+    width: 100% !important; /* Tam genişlikte ortalanmasını sağlar */
+}
+
+body.sidebar-collapsed .ktun-menu-item i {
+    font-size: 1.5rem;
+    width: auto;
+    margin: 0 !important;
+    text-align: center;
+}
+
+.logo-small {
+    display: none;
+}
+
+body.sidebar-collapsed .logo-large {
+    display: none !important; 
+}
+
+body.sidebar-collapsed .logo-small {
+    display: block !important; 
 }

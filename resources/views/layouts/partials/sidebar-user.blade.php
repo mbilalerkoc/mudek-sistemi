@@ -18,7 +18,7 @@
 
     <li class="ktun-menu-item {{ request()->routeIs('user.dersler') ? 'active' : '' }}">
         <a href="{{ route('user.dersler') }}">
-            <i class="bi bi-person"></i>
+            <i class="bi bi-book"></i>
             <span>Dersler</span>
         </a>
     </li>
@@ -29,12 +29,11 @@
     <li class="ktun-menu-title mt-2">HESAP</li>
 
     <li class="ktun-menu-item">
-        <form method="POST" action="{{ route('logout') }}">
+        <form action="..." method="POST">
             @csrf
             <button type="submit" class="ktun-logout-btn">
                 <i class="bi bi-box-arrow-left"></i>
-                <span>Çıkış Yap</span>
-            </button>
+                <span>Çıkış Yap</span> </button>
         </form>
     </li>
 
