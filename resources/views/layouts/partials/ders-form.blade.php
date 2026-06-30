@@ -1,46 +1,39 @@
-<form action="#" method="POST">
+<form action="{{ route('ders.katki.kaydet') }}" method="POST">
     @csrf
-
-    <div class="mb-3">
-        <label class="form-label">Ders Öğrenme Çıktıları</label>
-        <textarea class="form-control" rows="3" placeholder="Bu dersi alan öğrenci şunları yapabilir hale gelir..."></textarea>
-    </div>
-
-    <div class="row">
-        <div class="col-12 col-md-6 mb-3">
-            <label class="form-label">Öğretim Yöntemi</label>
-            <select class="form-select">
-                <option selected disabled>Seçiniz</option>
-                <option>Anlatım</option>
-                <option>Tartışma</option>
-                <option>Proje Tabanlı Öğrenme</option>
-                <option>Laboratuvar Uygulaması</option>
-            </select>
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
+    @endif
 
-        <div class="col-12 col-md-6 mb-3">
-            <label class="form-label">Ölçme Değerlendirme Yöntemi</label>
-            <select class="form-select">
-                <option selected disabled>Seçiniz</option>
-                <option>Yazılı Sınav</option>
-                <option>Ödev</option>
-                <option>Proje</option>
-                <option>Sözlü Sınav</option>
-            </select>
+    @forelse ($dersler as $ders)
+        <div class="mb-3">
+            <label class="form-label fw-bold">
+                {{ $ders->ders_adi }} Program Çıktılarına Katkısı (1-5)
+            </label>
+            
+            <input type="number" 
+                   name="katkilar[{{ $ders->id }}]" 
+                   class="form-control @error('katkilar.'.$ders->id) is-invalid @enderror" 
+                   min="1" 
+                   max="5" 
+                   placeholder="Örn: 4"
+                   value="{{ old('katkilar.'.$ders->id, $ders->mevcut_katki ?? '') }}">
+
+            @error('katkilar.'.$ders->id)
+                <div class="invalid-feedback">
+                    {{ $message }}
+                </div>
+            @enderror
         </div>
-    </div>
+    @empty
+        <div class="alert alert-warning">
+            Şu an sistemde ders bulunmuyor.
+        </div>
+    @endforelse
 
-    <div class="mb-3">
-        <label class="form-label">Dersin Program Çıktılarına Katkısı (1-5)</label>
-        <input type="number" class="form-control" min="1" max="5" placeholder="Örn: 4">
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Ders İzlencesi (Dosya)</label>
-        <input type="file" class="form-control">
-    </div>
-
-    <div class="text-end">
+    <div class="text-end mt-4">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
         <button type="submit" class="btn btn-primary-light">Kaydet</button>
     </div>

@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DersController;
 
 // Ana sayfa → direkt login'e yönlendir
 Route::get('/', function () {
@@ -26,3 +27,6 @@ Route::prefix('user')->middleware(['auth'])->group(function () {
     Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
     Route::get('/dersler', [UserController::class, 'dersler'])->name('user.dersler');
 });
+
+Route::get('/user/dersler', [DersController::class, 'index'])->name('user.dersler');
+Route::post('/user/dersler/kaydet', [DersController::class, 'katkilariniKaydet'])->name('ders.katki.kaydet');

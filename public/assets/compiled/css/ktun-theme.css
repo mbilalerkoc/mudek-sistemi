@@ -6,6 +6,8 @@
 :root {
     --ktun-primary:      #00acc1;
     --ktun-primary-light: #1abc9c;
+    --ktun-btn-text: #fff;
+    --ktun-btn-shadow: 0 4px 10px #1abc9c80;
     --ktun-primary-dark: rgba(0, 172, 193, .25);
     --ktun-navbar-bg:    #5a6a7a;
     --ktun-sidebar-w:    185px;
@@ -73,7 +75,7 @@ body {
 
 .ktun-nav-icon {
     color: #fff;
-    font-size: 1.1rem;
+    font-size: 1.5rem;
     text-decoration: none;
     position: relative;
     display: flex;
@@ -85,21 +87,10 @@ body {
 
 .ktun-nav-username {
     font-size: 0.82rem;
+    font-weight: bold;
     color: #fff;
 }
 
-.ktun-badge {
-    position: absolute;
-    top: -5px; right: -6px;
-    background: var(--ktun-primary);
-    color: #fff;
-    font-size: 0.6rem;
-    width: 15px; height: 15px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
 
 .ktun-avatar img {
     width: 34px; height: 34px;
@@ -195,16 +186,17 @@ body {
 }
 
 .ktun-menu-item.active > a {
-    background: #e8edf2;
+    /* background: #e8edf2; */
     color: var(--ktun-primary);
     font-weight: 600;
-    border-left: 3px solid var(--ktun-primary);
+    /* border-left: 3px solid var(--ktun-primary); */
 }
 
 .ktun-menu-item i {
     font-size: 1rem;
     width: 18px;
     text-align: center;
+    margin-top: -10px;
 }
 
 .ktun-menu-item.active i {
@@ -285,6 +277,8 @@ body {
 .btn-primary-light {
     background: var(--ktun-primary-light) !important;
     border-color: var(--ktun-primary-light) !important;
+    color: var(--ktun-btn-text) !important;
+    box-shadow: var(--ktun-btn-shadow) !important;
 }
 
 .btn-primary:hover {

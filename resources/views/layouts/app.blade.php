@@ -24,22 +24,23 @@
                     <i class="bi bi-list"></i>
                 </button>
             </div>
-            <div class="ktun-navbar-right">
-                {{-- <a href="#" class="ktun-nav-icon"><i class="bi bi-fullscreen"></i></a> --}}
+            <div class="ktun-navbar-right d-flex align-items-center gap-3">
+    {{-- <a href="#" class="ktun-nav-icon"><i class="bi bi-fullscreen"></i></a> --}}
                 {{-- <a href="#" class="ktun-nav-icon"><i class="bi bi-grid-3x3-gap"></i></a> --}}
                 {{-- <a href="#" class="ktun-nav-icon position-relative">
                     <i class="bi bi-envelope"></i>
                     <span class="ktun-badge">0</span>
                 </a> --}}
-                <a href="#" class="ktun-nav-icon d-flex align-items-center gap-1">
-                    <i class="bi bi-person-circle"></i>
-                    <span class="ktun-nav-username">{{ auth()->check() ? auth()->user()->name : 'Kullanıcı' }}</span>
-                    <i class="bi bi-chevron-down" style="font-size:0.7rem;"></i>
-                </a>
-                <div class="ktun-avatar">
-                    <img src="{{ asset('assets/compiled/jpg/1.jpg') }}" alt="Profil">
-                </div>
-            </div>
+    
+    <a href="#" class="d-flex align-items-center gap-2 text-white text-decoration-none">
+    <span class="ktun-nav-username">{{ auth()->check() ? auth()->user()->name : 'Kullanıcı' }}</span>
+    <i class="bi bi-chevron-down" style="font-size: 0.7rem; font-weight: bold; -webkit-text-stroke: 1px;"></i>
+</a>
+
+    <div class="ktun-avatar">
+        <img src="{{ asset('assets/compiled/jpg/1.jpg') }}" alt="Profil">
+    </div>
+</div>
         </div>
     </nav>
 
