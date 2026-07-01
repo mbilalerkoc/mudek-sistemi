@@ -114,7 +114,7 @@
                                         </div>
                                     </div>
 
-                                    <a href="{{ route('ders.form.goster', $ders['id']) }}" class="btn btn-primary-light">
+                                    <a href="{{ route('user.ders.detay', $ders['id']) }}" class="btn btn-primary">
                                         Formu Doldur
                                     </a>
                                 </div>

@@ -15,8 +15,9 @@
     --ktun-bg:           #f0f2f5;
     --ktun-text:         #39424e;
     --ktun-border:       #e0e4e8;
-    --ktun-sidebar-text: #444;
+    --ktun-sidebar-text: #  ;
     --ktun-sidebar-title:#888;
+    --ktun-auth-btn: #f1556c;
 }
 
 /* ================================================
@@ -368,4 +369,51 @@ body.sidebar-collapsed .logo-large {
 
 body.sidebar-collapsed .logo-small {
     display: block !important; 
+}
+
+/* login sayfası logo ve form alanı için özel stiller */
+.auth-logo {
+    margin-bottom: 3rem !important;
+    text-align: left !important;  
+}
+.auth-logo img {
+    height: 100px !important; 
+    width: auto !important;  
+    max-width: 100%;         
+}
+.auth-btn {
+    background-color: var(--ktun-auth-btn) !important;
+    border-color: var(--ktun-auth-btn) !important;
+    color: var(--ktun-btn-text) !important;
+
+    display: block !important;
+    width: 100% !important;
+    font-weight: 400;
+    text-align: center;
+    cursor: pointer;
+
+    box-shadow: var(--ktun-auth-btn) !important;
+}
+
+.auth-btn:hover {
+    opacity: 0.9;
+    color: var(--ktun-btn-text) !important;
+}
+
+.auth-forgot-password {
+    color: var(--ktun-sidebar-text) !important;
+    font-size: 0.85rem; 
+    text-decoration: none;
+}
+
+.auth-forgot-password:hover {
+    text-decoration: underline;
+    opacity: 0.8;
+}
+
+.auth-img-fluid {
+    width: 100% !important;
+    height: 100vh !important;     /* Ekran yüksekliğini tam kaplasın */
+    object-fit: cover !important; /* Resmin en-boy oranı bozulmadan kesilerek sığdırılmasını sağlar */
+    display: block;
 }

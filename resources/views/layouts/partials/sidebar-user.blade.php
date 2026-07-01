@@ -1,5 +1,4 @@
 <ul class="ktun-menu">
-
     <li class="ktun-menu-title">GENEL MENÜ</li>
 
     <li class="ktun-menu-item {{ request()->routeIs('user.dashboard') ? 'active' : '' }}">
@@ -23,18 +22,17 @@
         </a>
     </li>
 
-
-
-
     <li class="ktun-menu-title mt-2">HESAP</li>
 
+    {{-- DÜZELTİLEN ÇIKIŞ YAP BUTONU --}}
     <li class="ktun-menu-item">
-        <form action="..." method="POST">
-            @csrf
-            <button type="submit" class="ktun-logout-btn">
-                <i class="bi bi-box-arrow-left"></i>
-                <span>Çıkış Yap</span> </button>
-        </form>
+        <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            <i class="bi bi-box-arrow-left"></i> 
+            <span>Çıkış Yap</span>
+        </a>
     </li>
 
+    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+        @csrf
+    </form>
 </ul>

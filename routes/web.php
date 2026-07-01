@@ -28,6 +28,11 @@ Route::prefix('user')->middleware(['auth'])->group(function () {
     Route::get('/dersler', [UserController::class, 'dersler'])->name('user.dersler');
 });
 
+
 Route::get('/user/dersler', [DersController::class, 'index'])->name('user.dersler');
-Route::post('/user/dersler/kaydet', [DersController::class, 'katkilariniKaydet'])->name('ders.katki.kaydet');
-Route::get('/user/dersler/{id}/form', [DersController::class, 'formGoster'])->name('ders.form.goster');
+
+Route::get('/user/dersler/{id}', [DersController::class, 'dersDetay'])->name('user.ders.detay');
+
+Route::get('/user/dersler/{ders_id}/form/{form_id}', [DersController::class, 'formGoster'])->name('user.form.goster');
+
+Route::post('/user/dersler/kaydet', [App\Http\Controllers\DersController::class, 'katkilariniKaydet'])->name('ders.katki.kaydet');

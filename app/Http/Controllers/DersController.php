@@ -56,16 +56,27 @@ class DersController extends Controller
         return redirect()->back()->with('success', 'Form statik olarak başarıyla test edildi! (Veriler geçici olarak kabul edildi)');
     }
 
-    public function formGoster($id)
+    public function formGoster($ders_id, $form_id)
     {
-        $seciliDers = collect($this->getStatikDersler())->firstWhere('id', (int)$id);
+        $seciliDers = collect($this->getStatikDersler())->firstWhere('id', (int)$ders_id);
 
         if (!$seciliDers) {
             abort(404, 'Ders bulunamadı'); 
         }
 
-        $dersler = [$seciliDers]; 
+        // 'dersler' kısmını compact içinden sildik, sadece var olanları gönderiyoruz
+        return view('user.ders_form_sayfasi', compact('seciliDers', 'form_id'));
+    }
+public function dersDetay($id)
+    {
+        // Tıklanan dersi bul
+        $ders = collect($this->getStatikDersler())->firstWhere('id', (int)$id);
 
-        return view('user.ders_form_sayfasi', compact('seciliDers', 'dersler'));
+        if (!$ders) {
+            abort(404, 'Ders bulunamadı');
+        }
+
+        // Bulunan dersi view'a gönder
+        return view('user.ders-detay', compact('ders'));
     }
 }
