@@ -1,0 +1,28 @@
+[90m= [39m[34;4mIlluminate\Database\Eloquent\Collection[39;24m {#8614
+    [34mall[39m: [
+      [34;4mApp\Models\Student[39;24m {#8617
+        [34mid[39m: [35m1[39m,
+        [34mcourse_id[39m: [35m1[39m,
+        [34mname[39m: [32m"[39m[32mAli Veli[39m[32m"[39m,
+        [34mstudent_no[39m: [32m"[39m[32m2021001[39m[32m"[39m,
+        [34mcreated_at[39m: [32m"[39m[32m2026-07-19 13:50:54[39m[32m"[39m,
+        [34mupdated_at[39m: [32m"[39m[32m2026-07-19 13:50:54[39m[32m"[39m,
+      },
+      [34;4mApp\Models\Student[39;24m {#8618
+        [34mid[39m: [35m2[39m,
+        [34mcourse_id[39m: [35m1[39m,
+        [34mname[39m: [32m"[39m[32mAyşe Fatma[39m[32m"[39m,
+        [34mstudent_no[39m: [32m"[39m[32m2021002[39m[32m"[39m,
+        [34mcreated_at[39m: [32m"[39m[32m2026-07-19 13:50:54[39m[32m"[39m,
+        [34mupdated_at[39m: [32m"[39m[32m2026-07-19 13:50:54[39m[32m"[39m,
+      },
+      [34;4mApp\Models\Student[39;24m {#8615
+        [34mid[39m: [35m3[39m,
+        [34mcourse_id[39m: [35m1[39m,
+        [34mname[39m: [32m"[39m[32mMehmet Yılmaz[39m[32m"[39m,
+        [34mstudent_no[39m: [32m"[39m[32m2021003[39m[32m"[39m,
+        [34mcreated_at[39m: [32m"[39m[32m2026-07-19 13:50:54[39m[32m"[39m,
+        [34mupdated_at[39m: [32m"[39m[32m2026-07-19 13:50:54[39m[32m"[39m,
+      },
+    ],
+  }

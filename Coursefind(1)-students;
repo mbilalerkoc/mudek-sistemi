@@ -1,0 +1,34 @@
+[90m= [39m[34;4mIlluminate\Database\Eloquent\Collection[39;24m {#8106
+    [34mall[39m: [
+      [34;4mApp\Models\Course[39;24m {#8103
+        [34mid[39m: [35m1[39m,
+        [34muser_id[39m: [35m2[39m,
+        [34mcode[39m: [32m"[39m[32mBIL101[39m[32m"[39m,
+        [34mname[39m: [32m"[39m[32mMatematik I[39m[32m"[39m,
+        [34mcredits[39m: [35m5[39m,
+        [34msemester[39m: [32m"[39m[32m2024-Güz[39m[32m"[39m,
+        [34mcreated_at[39m: [32m"[39m[32m2026-07-19 13:50:54[39m[32m"[39m,
+        [34mupdated_at[39m: [32m"[39m[32m2026-07-19 13:50:54[39m[32m"[39m,
+      },
+      [34;4mApp\Models\Course[39;24m {#8102
+        [34mid[39m: [35m2[39m,
+        [34muser_id[39m: [35m2[39m,
+        [34mcode[39m: [32m"[39m[32mBIL102[39m[32m"[39m,
+        [34mname[39m: [32m"[39m[32mFizik I[39m[32m"[39m,
+        [34mcredits[39m: [35m4[39m,
+        [34msemester[39m: [32m"[39m[32m2024-Güz[39m[32m"[39m,
+        [34mcreated_at[39m: [32m"[39m[32m2026-07-19 13:50:54[39m[32m"[39m,
+        [34mupdated_at[39m: [32m"[39m[32m2026-07-19 13:50:54[39m[32m"[39m,
+      },
+      [34;4mApp\Models\Course[39;24m {#8105
+        [34mid[39m: [35m3[39m,
+        [34muser_id[39m: [35m3[39m,
+        [34mcode[39m: [32m"[39m[32mBIL103[39m[32m"[39m,
+        [34mname[39m: [32m"[39m[32mAlgoritma ve Programlama[39m[32m"[39m,
+        [34mcredits[39m: [35m6[39m,
+        [34msemester[39m: [32m"[39m[32m2024-Güz[39m[32m"[39m,
+        [34mcreated_at[39m: [32m"[39m[32m2026-07-19 13:50:54[39m[32m"[39m,
+        [34mupdated_at[39m: [32m"[39m[32m2026-07-19 13:50:54[39m[32m"[39m,
+      },
+    ],
+  }
