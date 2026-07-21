@@ -7,7 +7,6 @@
     <title>@yield('title', 'Konya Teknik Üniversitesi - MÜDEK Sistemi')</title>
 
     <link rel="stylesheet" href="{{ asset('assets/compiled/css/app.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/compiled/css/app-dark.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/compiled/css/iconly.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/compiled/css/ktun-theme.css') }}">
 </head>

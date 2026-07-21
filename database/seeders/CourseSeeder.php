@@ -32,5 +32,19 @@ class CourseSeeder extends Seeder
             'credits'  => 6,
             'semester' => '2024-Güz',
         ]);
+        Course::create([
+            'user_id'  => 3,
+            'code'     => 'BIL105',
+            'name'     => 'Veri Tabanı Yönetim Sistemleri',
+            'credits'  => 3,
+            'semester' => '2024-Güz',
+        ]);
+        Course::create([
+            'user_id'  => 2,
+            'code'     => 'BIL104',
+            'name'     => 'Veri Yapıları',
+            'credits'  => 6,
+            'semester' => '2024-Güz',
+        ]);
     }
 }

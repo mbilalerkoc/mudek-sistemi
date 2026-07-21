@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\Models\Course;
 class UserController extends Controller
 {
     public function index()
@@ -16,9 +16,10 @@ class UserController extends Controller
         return view('user.profile');
     }
 
-    public function dersler()
+public function dersler()
 {
-    // resources/views/user/dersler.blade.php dosyasını çağırır
-    return view('user.dersler');
+    $courses = Course::all();
+    
+    return view('user.dersler', compact('courses'));
 }
 }

@@ -4,20 +4,26 @@
 ================================================ */
 
 :root {
-    --ktun-primary:      #00acc1;
-    --ktun-primary-light: #1abc9c;
-    --ktun-btn-text: #fff;
-    --ktun-btn-shadow: 0 4px 10px #1abc9c80;
-    --ktun-primary-dark: rgba(0, 172, 193, .25);
-    --ktun-navbar-bg:    #5a6a7a;
-    --ktun-sidebar-w:    185px;
-    --ktun-navbar-h:     55px;
-    --ktun-bg:           #f0f2f5;
-    --ktun-text:         #39424e;
-    --ktun-border:       #e0e4e8;
-    --ktun-sidebar-text: #  ;
-    --ktun-sidebar-title:#888;
-    --ktun-auth-btn: #f1556c;
+    --ktun-primary:               #00acc1;
+    --ktun-primary-light:         #1abc9c;
+    --ktun-primary-dark:          rgba(0, 172, 193, .25);
+    --ktun-secondary-light:       #ffffff;
+    --ktun-btn-text:              #ffffff;
+    --ktun-btn-secondary-text:    #000000;
+    --ktun-btn-shadow:            0 4px 10px rgba(26, 188, 156, 0.5);
+    --ktun-navbar-bg:             #5a6a7a;
+    --ktun-sidebar-w:             185px;
+    --ktun-navbar-h:              55px;
+    --ktun-bg:                    #f0f2f5;
+    --ktun-text:                  #39424e;
+    --ktun-border:                #e0e4e8;
+    --ktun-sidebar-text:          #444444;
+    --ktun-sidebar-title:         #888888;
+    --ktun-auth-btn:              #f1556c;
+
+    /* Yazı renkleri */
+    --ktun-card-title:            #1e293b;
+    --ktun-card-text:             #6c757d;
 }
 
 /* ================================================
@@ -42,7 +48,7 @@ body {
 }
 
 /* ================================================
-   NAVBAR - tam genişlik üstte
+   NAVBAR
 ================================================ */
 .ktun-navbar {
     position: fixed;
@@ -92,7 +98,6 @@ body {
     color: #fff;
 }
 
-
 .ktun-avatar img {
     width: 34px; height: 34px;
     border-radius: 50%;
@@ -101,7 +106,7 @@ body {
 }
 
 /* ================================================
-   SIDEBAR - navbar altından başlar, sol tam yükseklik
+   SIDEBAR
 ================================================ */
 #ktun-sidebar {
     position: fixed;
@@ -121,7 +126,6 @@ body {
     overflow: hidden;
 }
 
-/* Sidebar profil alanı */
 .ktun-sidebar-profile {
     padding: 1.2rem 1rem 1rem;
     border-bottom: 1px solid var(--ktun-border);
@@ -148,10 +152,12 @@ body {
     margin-top: 2px;
 }
 
-/* Sidebar menü */
 .ktun-sidebar-menu { padding: 0.5rem 0; }
 
-.ktun-menu { list-style: none; }
+.ktun-menu {
+    list-style: none;
+    padding-left: 0 !important;
+}
 
 .ktun-menu-title {
     font-size: 0.7rem;
@@ -188,10 +194,8 @@ body {
 }
 
 .ktun-menu-item.active > a {
-    /* background: #e8edf2; */
     color: var(--ktun-primary);
     font-weight: 600;
-    /* border-left: 3px solid var(--ktun-primary); */
 }
 
 .ktun-menu-item i {
@@ -244,6 +248,7 @@ body {
     border: none;
     border-radius: 6px;
     box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+    background: #fff;
 }
 
 .card-header {
@@ -251,8 +256,39 @@ body {
     border-bottom: 2px solid var(--ktun-primary);
     font-weight: 600;
     font-size: 0.9rem;
+    color: var(--ktun-card-title);
 }
 
+.card-title {
+    color: var(--ktun-card-title) !important;
+    font-weight: 600;
+}
+
+.card-body p,
+.card-body h6 {
+    color: var(--ktun-card-text);
+}
+
+
+/* ================================================
+   TEXT-MUTED OVERRIDE
+================================================ */
+.text-muted {
+    color: #6c757d !important;
+    opacity: 1 !important;
+}
+
+.card-title {
+    color: #1e293b !important;
+    opacity: 1 !important;
+}
+
+.card-body .text-muted,
+.card-body p,
+.card-body small {
+    color: #6c757d !important;
+    opacity: 1 !important;
+}
 /* ================================================
    TABLO
 ================================================ */
@@ -267,6 +303,7 @@ body {
 .table tbody td {
     vertical-align: middle;
     font-size: 0.85rem;
+    color: var(--ktun-text);
 }
 
 /* ================================================
@@ -275,7 +312,14 @@ body {
 .btn-primary {
     background: var(--ktun-primary) !important;
     border-color: var(--ktun-primary) !important;
+    color: var(--ktun-btn-text) !important;
 }
+
+.btn-primary:hover {
+    background: var(--ktun-primary-dark) !important;
+    border-color: var(--ktun-primary-dark) !important;
+}
+
 .btn-primary-light {
     background: var(--ktun-primary-light) !important;
     border-color: var(--ktun-primary-light) !important;
@@ -283,9 +327,11 @@ body {
     box-shadow: var(--ktun-btn-shadow) !important;
 }
 
-.btn-primary:hover {
-    background: var(--ktun-primary-dark) !important;
-    border-color: var(--ktun-primary-dark) !important;
+.btn-outline-secondary {
+    background: var(--ktun-secondary-light) !important;
+    border-color: var(--ktun-primary-light) !important;
+    color: var(--ktun-btn-secondary-text) !important;
+    box-shadow: var(--ktun-btn-shadow) !important;
 }
 
 a { color: var(--ktun-primary); }
@@ -302,54 +348,56 @@ a:hover { color: var(--ktun-primary-dark); }
     margin-bottom: 1.5rem;
 }
 
-.page-heading h3 {
+.page-heading h3,
+.page-title h3 {
     font-size: 1.2rem;
     font-weight: 700;
-    color: var(--ktun-text);
+    color: var(--ktun-card-title);
     margin: 0;
 }
-/* Sidebar ve Ana İçerik için Yumuşak Geçiş (Animasyon) */
+
+.text-subtitle {
+    color: var(--ktun-card-text) !important;
+}
+
+.fw-bold {
+    color: var(--ktun-card-title);
+}
+
+/* ================================================
+   SIDEBAR VE ANA İÇERİK GEÇİŞ ANİMASYONU
+================================================ */
 #ktun-sidebar, #ktun-main, .ktun-navbar {
     transition: all 0.3s ease-in-out;
 }
 
-/* =========================================
-   DARALTILMIŞ MENÜ (COLLAPSED) KODLARI
-   ========================================= */
-
-/* 1. Sidebar Genişliğini Küçült */
+/* ================================================
+   DARALTILMIŞ MENÜ (COLLAPSED)
+================================================ */
 body.sidebar-collapsed #ktun-sidebar {
-    width: 70px !important; /* İkonların sığacağı dar genişlik */
+    width: 70px !important;
     overflow: hidden;
 }
 
-/* 2. Ana İçeriği Sola Çek (Boşluğu doldur) */
 body.sidebar-collapsed #ktun-main {
     margin-left: 70px !important;
 }
 
-/* 3. Menü Yazılarını, Başlıkları ve Profil Kısmını Gizle */
-body.sidebar-collapsed .ktun-menu-item > a span, 
+body.sidebar-collapsed .ktun-menu-item > a span,
 body.sidebar-collapsed .ktun-menu-item > form > .ktun-logout-btn span,
 body.sidebar-collapsed .ktun-menu-title,
 body.sidebar-collapsed .ktun-sidebar-profile {
     display: none !important;
 }
 
-/* Menü listesinin (ul) varsa varsayılan sol boşluğunu sıfırla */
-.ktun-menu {
-    padding-left: 0 !important;
-}
-
-/* 4. İkonları Tam Ortala ve Biraz Büyüt */
 body.sidebar-collapsed .ktun-menu-item > a,
 body.sidebar-collapsed .ktun-menu-item > form > .ktun-logout-btn {
-    justify-content: center !important; /* Flex içeriğini ortalar */
-    padding: 0.8rem 0; /* Üstten alttan boşluk bırakır */
-    padding-left: 0 !important; /* İkonu sağa iten sol boşluğu ezer */
+    justify-content: center !important;
+    padding: 0.8rem 0;
+    padding-left: 0 !important;
     padding-right: 0 !important;
-    gap: 0 !important; /* Varsa ikon-yazı boşluğunu sıfırlar */
-    width: 100% !important; /* Tam genişlikte ortalanmasını sağlar */
+    gap: 0 !important;
+    width: 100% !important;
 }
 
 body.sidebar-collapsed .ktun-menu-item i {
@@ -359,40 +407,34 @@ body.sidebar-collapsed .ktun-menu-item i {
     text-align: center;
 }
 
-.logo-small {
-    display: none;
-}
+.logo-small { display: none; }
 
-body.sidebar-collapsed .logo-large {
-    display: none !important; 
-}
+body.sidebar-collapsed .logo-large { display: none !important; }
+body.sidebar-collapsed .logo-small { display: block !important; }
 
-body.sidebar-collapsed .logo-small {
-    display: block !important; 
-}
-
-/* login sayfası logo ve form alanı için özel stiller */
+/* ================================================
+   AUTH (LOGIN) SAYFASI
+================================================ */
 .auth-logo {
     margin-bottom: 3rem !important;
-    text-align: left !important;  
+    text-align: left !important;
 }
+
 .auth-logo img {
-    height: 100px !important; 
-    width: auto !important;  
-    max-width: 100%;         
+    height: 100px !important;
+    width: auto !important;
+    max-width: 100%;
 }
+
 .auth-btn {
     background-color: var(--ktun-auth-btn) !important;
     border-color: var(--ktun-auth-btn) !important;
     color: var(--ktun-btn-text) !important;
-
     display: block !important;
     width: 100% !important;
     font-weight: 400;
     text-align: center;
     cursor: pointer;
-
-    box-shadow: var(--ktun-auth-btn) !important;
 }
 
 .auth-btn:hover {
@@ -402,7 +444,7 @@ body.sidebar-collapsed .logo-small {
 
 .auth-forgot-password {
     color: var(--ktun-sidebar-text) !important;
-    font-size: 0.85rem; 
+    font-size: 0.85rem;
     text-decoration: none;
 }
 
@@ -413,7 +455,7 @@ body.sidebar-collapsed .logo-small {
 
 .auth-img-fluid {
     width: 100% !important;
-    height: 100vh !important;     /* Ekran yüksekliğini tam kaplasın */
-    object-fit: cover !important; /* Resmin en-boy oranı bozulmadan kesilerek sığdırılmasını sağlar */
+    height: 100vh !important;
+    object-fit: cover !important;
     display: block;
 }
