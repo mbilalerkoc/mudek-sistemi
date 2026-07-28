@@ -25,7 +25,7 @@
         @if($form_id == 1)
             @include('user.dersler.forms.notlar')
         @elseif($form_id == 2)
-            @include('user.dersler.forms.sinav-kagitlari')
+            @include('user.dersler.forms.odevler')
         @else
             <div class="alert alert-warning">Form bulunamadı.</div>
         @endif

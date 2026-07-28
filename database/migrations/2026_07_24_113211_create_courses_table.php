@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -10,11 +9,10 @@ return new class extends Migration
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // dersi veren öğretmen
-            $table->string('code')->unique();   // BIL101
-            $table->string('name');             // Matematik I
-            $table->integer('credits');         // kredi
-            $table->string('semester');         // 2024-Güz
+            $table->string('code')->unique();
+            $table->string('name');
+            $table->integer('credits');
+            $table->string('semester');
             $table->timestamps();
         });
     }
