@@ -3,13 +3,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Course;
-use App\Models\Grade;
+use App\Models\StudentCourse; // student_courses tablosu için
 
 class DersController extends Controller
 {
     public function index()
     {
-        $courses = Course::where('user_id', auth()->user()->id)->get();
+        // Artık dersleri doğrudan user_id ile değil, user_courses köprü tablosu (ilişkisi) üzerinden çekiyoruz
+        $courses = auth()->user()->courses; 
 
         return view('user.dersler.index', compact('courses'));
     }
@@ -24,16 +25,31 @@ class DersController extends Controller
     public function formGoster($ders_id, $form_id)
     {
         $course = Course::findOrFail($ders_id);
-        $students = $course->students;
+        
+        // Öğrencileri ve bu derse ait ara tablo (student_courses) verilerini birlikte çekiyoruz
+        $students = $course->students()->with(['studentCourses' => function($query) use ($ders_id) {
+            $query->where('course_id', $ders_id);
+        }])->get();
 
         return view('user.dersler.forms.index', compact('course', 'form_id', 'students'));
-    }   
+    } 
 
     public function notlariKaydet(Request $request)
     {
+        $request->validate([
+            'course_id' => 'required|exists:courses,id',
+            'grades' => 'required|array'
+        ]);
+
+        $courseId = $request->input('course_id');
+
         foreach ($request->grades as $student_id => $notlar) {
-            Grade::updateOrCreate(
-                ['student_id' => $student_id],
+            // Notlar artık student_courses tablosunda tutuluyor
+            StudentCourse::updateOrCreate(
+                [
+                    'student_id' => $student_id,
+                    'course_id' => $courseId
+                ],
                 [
                     'midterm' => $notlar['midterm'] ?? null,
                     'final'   => $notlar['final'] ?? null,

@@ -3,21 +3,24 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Student extends Model
 {
-    protected $fillable = ['course_id', 'name', 'student_no'];
+    protected $guarded = []; // veya gerekli doldurulabilir alanlar
 
-    // Bu öğrencinin ait olduğu ders
-    public function course()
+    // Bu öğrencinin dersleri (pivot tablo: student_courses)
+    public function courses(): BelongsToMany
     {
-        return $this->belongsTo(Course::class);
+        return $this->belongsToMany(Course::class, 'student_courses', 'student_id', 'course_id')
+                    ->withPivot('semester', 'midterm', 'final', 'makeup');
     }
 
-    // Bu öğrencinin notu
-    public function grade()
+    // student_courses tablosuna doğrudan hasMany ilişkisi (Notları ve ara tablo verilerini çekmek için)
+    public function studentCourses(): HasMany
     {
-        return $this->hasOne(Grade::class);
+        return $this->hasMany(StudentCourse::class, 'student_id');
     }
 
     // Bu öğrencinin ödev teslimleri

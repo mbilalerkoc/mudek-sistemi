@@ -28,8 +28,7 @@ class User extends Authenticatable
     ];
 
     // Bu öğretmenin dersleri
-    public function courses()
-    {
-        return $this->hasMany(Course::class);
-    }
+    public function courses() {
+    return $this->belongsToMany(Course::class, 'user_courses', 'user_id', 'course_id');
+}
 }

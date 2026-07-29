@@ -10,9 +10,9 @@ class ExamPaper extends Model
 
     // Bu sınavın ait olduğu ders
     public function course()
-    {
-        return $this->belongsTo(Course::class);
-    }
+{
+    return $this->belongsTo(Course::class, 'course_id');
+}
 
     // Bu sınavın öğrenci kağıtları
     public function studentPapers()
