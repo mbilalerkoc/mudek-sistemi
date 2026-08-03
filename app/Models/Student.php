@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use App\Models\StudentExam;
 
 class Student extends Model
 {
@@ -33,5 +35,17 @@ class Student extends Model
     public function studentPapers()
     {
         return $this->hasMany(StudentPaper::class);
+    }
+
+    public function studentExams(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            StudentExam::class,   // Ulaşmak istediğimiz hedef tablo (Model)
+            StudentCourse::class, // Köprü/Ara tablo (Model)
+            'student_id',         // StudentCourse tablosundaki öğrenci sütunu
+            'student_course_id',  // StudentExam tablosundaki köprü ID sütunu
+            'id',                 // Students tablosundaki anahtar
+            'id'                  // StudentCourses tablosundaki anahtar
+        );
     }
 }
