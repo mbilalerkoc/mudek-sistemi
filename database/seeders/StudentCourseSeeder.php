@@ -28,7 +28,6 @@ class StudentCourseSeeder extends Seeder
                             'course_id' => $course->id,
                         ],
                         [
-                            'semester' => '1. Dönem',
                             'created_at' => now(),
                             'updated_at' => now(),
                         ]

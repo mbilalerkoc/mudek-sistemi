@@ -7,20 +7,27 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     public function up(): void
-    {
+    {   
+        // 0. Academic Titles
+        Schema::create('academic_titles', function (Blueprint $table) {
+            $table->id();
+            $table->integer('title');
+            $table->timestamps();
+        });
         // 1. Users
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('surname')->nullable();
-            $table->string('academic_title')->nullable();
             $table->string('email')->unique();
             $table->string('password');
+            $table->foreignId('academic_title_id')->nullable()->constrained('academic_titles')->onDelete('set null');
             $table->string('role')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
 
+        
         // 2. Courses
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
@@ -53,7 +60,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('student_id')->constrained('students')->onDelete('cascade');
             $table->foreignId('course_id')->constrained('courses')->onDelete('cascade');
-            $table->string('semester')->nullable();
             $table->decimal('average', 5, 2)->nullable();
             $table->string('status')->nullable();
             $table->timestamps();
@@ -73,7 +79,6 @@ return new class extends Migration
         // 7. Student Exams (Öğrencinin sınav kağıdı/sonucu ve skor sütunları)
         Schema::create('student_exams', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('student_id')->constrained('students')->onDelete('cascade');
             $table->foreignId('student_course_id')->constrained('student_courses')->onDelete('cascade');
             $table->foreignId('exam_id')->constrained('exams')->onDelete('cascade');
             $table->string('path')->nullable();
@@ -89,11 +94,17 @@ return new class extends Migration
         Schema::create('assignments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('course_id')->constrained('courses')->onDelete('cascade');
-            $table->foreignId('exam_id')->nullable()->constrained('exams')->onDelete('cascade'); // Birden fazla ödev bu sınava bağlanabilir
             $table->string('title');
             $table->text('description')->nullable();
             $table->decimal('max_score', 5, 2)->nullable(); // Ödevin max puanı
             $table->dateTime('due_date')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('exam_assignments', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('exam_id')->constrained('exams')->onDelete('cascade');
+            $table->foreignId('assignment_id')->constrained('assignments')->onDelete('cascade');
             $table->timestamps();
         });
 
@@ -124,6 +135,15 @@ return new class extends Migration
             $table->decimal('score', 5, 2)->nullable();
             $table->timestamps();
         });
+
+        Schema::create('sessions', function (Blueprint $table) {
+            $table->string('id')->primary();
+            $table->foreignId('user_id')->nullable()->index();
+            $table->string('ip_address', 45)->nullable();
+            $table->text('user_agent')->nullable();
+            $table->longText('payload');
+            $table->integer('last_activity')->index();
+        });
     }
 
     public function down(): void
@@ -131,6 +151,7 @@ return new class extends Migration
         Schema::dropIfExists('answers');
         Schema::dropIfExists('questions');
         Schema::dropIfExists('assignment_submissions');
+        Schema::dropIfExists('exam_assignments');
         Schema::dropIfExists('assignments');
         Schema::dropIfExists('student_exams');
         Schema::dropIfExists('exams');
@@ -139,5 +160,7 @@ return new class extends Migration
         Schema::dropIfExists('user_courses');
         Schema::dropIfExists('courses');
         Schema::dropIfExists('users');
+        Schema::dropIfExists('sessions');
+        Schema::dropIfExists('academic_titles');
     }
 };

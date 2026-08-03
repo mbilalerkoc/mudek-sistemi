@@ -20,39 +20,49 @@
                         <tr>
                             <th>Öğrenci No</th>
                             <th>Ad Soyad</th>
-                            <th>Vize</th>
-                            <th>Final</th>
-                            <th>Bütünleme</th>
+                            @foreach ($exams ?? [] as $exam)
+                                <th class="text-center">
+                                    {{ ucfirst($exam->exam_type) }}
+                                    <span class="d-block text-muted" style="font-size: 11px;">
+                                        {{ $exam->exam_date ? \Carbon\Carbon::parse($exam->exam_date)->format('d.m.Y') : '' }}
+                                    </span>
+                                </th>
+                            @endforeach
+
+                            <th class="text-center">Toplam Puan</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($students as $student)
-                            @php
-                                // Öğrencinin bu derse ait pivot/ara tablosundaki notlarını çekiyoruz
-                                $studentCourse = $student->studentCourses->where('course_id', $course->id)->first();
-                            @endphp
-
                             <tr>
                                 <td>{{ $student->student_no }}</td>
-                                <td>{{ $student->name }}</td>
-                                <td>
-                                    <input type="number" name="grades[{{ $student->id }}][midterm]"
-                                        class="form-control" min="0" max="100"
-                                        value="{{ $studentCourse->midterm ?? '' }}">
-                                </td>
-                                <td>
-                                    <input type="number" name="grades[{{ $student->id }}][final]" class="form-control"
-                                        min="0" max="100" value="{{ $studentCourse->final ?? '' }}">
-                                </td>
-                                <td>
-                                    <input type="number" name="grades[{{ $student->id }}][makeup]"
-                                        class="form-control" min="0" max="100"
-                                        value="{{ $studentCourse->makeup ?? '' }}">
+                                <td>{{ $student->name }} {{ $student->surname }}</td>
+                                
+                                @foreach ($exams ?? [] as $exam)
+                                    @php
+
+                                        $studentExam = $student->studentExams->where('exam_id', $exam->id)->first();
+                                    @endphp
+                                    <td class="text-center">
+                                        @if($studentExam)
+                                            <input type="number" step="0.01" min="0" max="100"
+                                                name="grades[{{ $studentExam->id }}][exam_score]"
+                                                value="{{ $studentExam->exam_score ?? '' }}"
+                                                class="form-control text-center">
+                                        @else
+                                            <span class="text-muted">Sınav tanımlı değil</span>
+                                        @endif
+                                    </td>
+                                @endforeach
+
+                                <td class="text-center fw-bold text-primary">
+                                    {{ $student->studentExams->sum('total_score') ?? 0 }}
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center">Bu derse kayıtlı öğrenci bulunamadı.</td>
+                                <td colspan="{{ 3 + ($exams->count() ?? 0) }}" class="text-center text-muted">
+                                    Bu derse kayıtlı öğrenci bulunmamaktadır.</td>
                             </tr>
                         @endforelse
                     </tbody>
