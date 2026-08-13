@@ -2,8 +2,8 @@
 
 namespace App\Repositories;
 
-use App\Repositories\Interfaces\CourseRepositoryInterface;
 use App\Models\Course;
+use App\Repositories\Interfaces\CourseRepositoryInterface;
 
 class CourseRepository extends BaseRepository implements CourseRepositoryInterface
 {
@@ -12,15 +12,29 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
         parent::__construct($model);
     }
 
+    // Öğretmenin derslerini getir
+    public function getByUser($userId)
+    {
+        return $this->model
+            ->whereHas('userCourses', function($q) use ($userId) {
+                $q->where('user_id', $userId);
+            })
+            ->get();
+    }
+
+    // Eski metod - öğretmen objesiyle çalışıyor
     public function getCoursesByTeacher($teacher)
     {
         return $teacher->courses;
     }
 
+    // Form için ders detaylarını ve sınav türlerini (midterm, final, makeup vb.) getir
     public function getCourseDetailsForForm($ders_id)
     {
         $course = $this->find($ders_id);
-        $exams = $course->exams ?? collect();
+        
+        // Tüm sınavları (bütünleme dahil) tarihe göre sıralı çekiyoruz
+        $exams = $course->exams()->orderBy('exam_date', 'asc')->get();
 
         $students = $course->students()->with([
             'studentCourses' => function($query) use ($ders_id) {
@@ -29,7 +43,8 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
             'studentExams' => function($query) use ($exams) {
                 $examIds = $exams->isNotEmpty() ? $exams->pluck('id')->toArray() : [];
                 $query->whereIn('exam_id', $examIds);
-            }
+            },
+            'studentExams.exam' // <-- Bu sayede $studentExam->exam->exam_type diyerek hangi sınav olduğunu okuyabilirsin
         ])->get();
 
         return compact('course', 'exams', 'students');

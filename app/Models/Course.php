@@ -30,4 +30,11 @@ public function studentCourses() {
     {
         return $this->hasMany(ExamPaper::class);
     }
+
+    public function exams()
+    {
+        return $this->hasMany(Exam::class, 'course_id');
+    }
+
+    
 }

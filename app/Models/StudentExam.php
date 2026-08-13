@@ -10,7 +10,13 @@ class StudentExam extends Model
     protected $table = 'student_exams';
     
     protected $guarded = [];
-
+protected $fillable = [
+    'student_course_id',
+    'exam_id',
+    'exam_score',
+    'assignment_score',
+    'total_score',
+];
     // Hangi öğrenciye ait olduğu
     public function student(): BelongsTo
     {

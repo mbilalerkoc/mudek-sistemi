@@ -3,73 +3,70 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Course;
-use App\Models\StudentCourse; // student_courses tablosu için
-use App\Models\StudentExam; // student_exams tablosu için
-use App\Models\Student; // Student modelini ekliyoruz
+use App\Repositories\Interfaces\CourseRepositoryInterface;
+use App\Services\GradeService;
 
 class DersController extends Controller
 {
     protected $courseRepository;
+    protected $gradeService;
 
-    // Dependency Injection ile Repository'yi buraya çağırıyoruz
-    public function __construct(CourseRepositoryInterface $courseRepository)
-    {
+    public function __construct(
+        CourseRepositoryInterface $courseRepository,
+        GradeService $gradeService
+    ) {
         $this->courseRepository = $courseRepository;
+        $this->gradeService = $gradeService;
     }
 
     public function index()
     {
-        // Veritabanı sorgusu yerine repository metodunu kullanıyoruz
         $courses = $this->courseRepository->getCoursesByTeacher(auth()->user());
-
         return view('user.dersler.index', compact('courses'));
     }
-    public function dersDetay($id)
-    {
-        // Dersin detay bilgilerini repository üzerinden alıyoruz
-        $course = $this->courseRepository->find($id);
 
-        return view('user.dersler.detay', compact('course'));
+    /**
+     * Rotalarda /user/dersler/{id} ile çağrılan ana ders detay / notlar metodu
+     */
+    public function dersDetay($id, $form_id = 1)
+    {
+        $data = $this->courseRepository->getCourseDetailsForForm($id);
+        
+        $course = $data['course'];
+        $exams = $data['exams'];
+        $students = $data['students'];
+
+        return view('user.dersler.forms.index', compact('course', 'form_id', 'exams', 'students'));
     }
 
-public function formGoster($ders_id, $form_id)
+    public function formGoster($ders_id, $form_id)
+    {
+        $data = $this->courseRepository->getCourseDetailsForForm($ders_id);
+        
+        $course = $data['course'];
+        $exams = $data['exams'];
+        $students = $data['students'];
+
+        return view('user.dersler.forms.index', compact('course', 'form_id', 'exams', 'students'));
+    }
+
+    public function notlariDuzenle($id)
 {
-    $course = Course::findOrFail($ders_id);
-    
-    // 1. Bu derse ait sınavları çekiyoruz
-    $exams = $course->exams ?? collect(); 
+    $data = $this->courseRepository->getCourseDetailsForForm($id);
 
-    // 2. Öğrencileri, ara tablo (studentCourses) ve bu kayda ait sınav sonuçlarıyla (studentExams) çekiyoruz
-    $students = $course->students()->with([
-        'studentCourses' => function($query) use ($ders_id) {
-            $query->where('course_id', $ders_id);
-        },
-        'studentExams' => function($query) use ($exams) {
-            $examIds = $exams->isNotEmpty() ? $exams->pluck('id')->toArray() : [];
-            $query->whereIn('exam_id', $examIds);
-        }
-    ])->get();
+    $course = $data['course'];
+    $exams = $data['exams'];
+    $students = $data['students'];
 
-    // 3. Blade dosyasının doğrudan beklediği $students değişkenini yolluyoruz
-    return view('user.dersler.forms.index', compact('course', 'form_id', 'exams', 'students'));
+    return view('user.dersler.forms.not-guncelle', compact('course', 'exams', 'students'));
 }
+
     public function notlariKaydet(Request $request)
     {
-        $request->validate([
-            'grades' => 'required|array'
-        ]);
+        $this->gradeService->kaydet($request->all());
 
-        foreach ($request->grades as $studentExamId => $score) {
-            $studentExam = StudentExam::find($studentExamId);
-
-            if($studentExam) {
-                $studentExam->update([
-                    'exam_score' => $score,
-                    'total_score' => $score + ($studentExam->assignment_score ?? 0) // Ödev puanı varsa ekle
-                ]);
-            }
-        }
-        return redirect()->back()->with('success', 'Notlar başarıyla kaydedildi!');
+        return redirect()
+            ->route('user.ders.detay', $request->input('course_id'))
+            ->with('success', 'Notlar başarıyla kaydedildi ve ortalamalar hesaplandı!');
     }
 }

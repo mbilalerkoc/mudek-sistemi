@@ -30,6 +30,9 @@ Route::prefix('user')->middleware(['auth'])->group(function () {
     Route::get('/dersler', [DersController::class, 'index'])->name('user.dersler');
     Route::get('/dersler/{id}', [DersController::class, 'dersDetay'])->name('user.ders.detay');
     Route::get('/dersler/{ders_id}/form/{form_id}', [DersController::class, 'formGoster'])->name('user.form.goster');
+
+    Route::get('/dersler/{id}/notlari/duzenle', [DersController::class, 'notlariDuzenle'])->name('user.ders.notlari.duzenle');
+
     Route::post('/dersler/notlari/kaydet', [DersController::class, 'notlariKaydet'])->name('ders.notlari.kaydet');
     Route::post('/dersler/katki/kaydet', [DersController::class, 'katkilariniKaydet'])->name('ders.katki.kaydet');
 });
