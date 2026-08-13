@@ -16,9 +16,20 @@ Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
+
 // Admin Paneli
-Route::prefix('admin')->middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+Route::middleware(['auth', 'super.admin'])->prefix('admin')->name('admin.')->group(function () {
+    
+    // Dashboard
+    Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
+
+    // Öğretmenleri Listeleme
+    Route::get('/teachers', [AdminController::class, 'teachers'])->name('teachers.index');
+
+    // Ders Yönetimi ve Atama
+    Route::get('/courses', [AdminController::class, 'courses'])->name('courses.index');
+    Route::post('/courses', [AdminController::class, 'storeCourse'])->name('courses.store');
+    Route::post('/courses/assign-teacher', [AdminController::class, 'assignTeacher'])->name('courses.assign');
 });
 
 // Kullanıcı Paneli

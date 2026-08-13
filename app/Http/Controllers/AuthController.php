@@ -4,43 +4,44 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
 class AuthController extends Controller
 {
-    // Login sayfasını göster
     public function showLogin()
     {
         return view('auth.login');
     }
 
-    // Login işlemi
     public function login(Request $request)
-{
-    $credentials = $request->validate([
-        'email' => 'required|email',
-        'password' => 'required',
-    ]);
+    {
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
 
-    if (Auth::attempt($credentials)) {
-        $request->session()->regenerate();
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
 
-        // Kullanıcıyı rolüne göre yönlendir
-        if (Auth::user()->role === 'admin') {
-            return redirect()->route('admin.dashboard');
+            // KULLANICI ROLÜNE GÖRE YÖNLENDİRME
+            if (Auth::user()->role === 'super_admin') {
+                return redirect()->intended(route('admin.dashboard'));
+            }
+
+            // Normal öğretmen ise user dashboard'a yönlendir
+            return redirect()->intended(route('user.dashboard'));
         }
 
-        return redirect()->route('user.dashboard');
+        return back()->withErrors([
+            'email' => 'Sağlanan bilgiler kayıtlarımızla eşleşmiyor.',
+        ])->onlyInput('email');
     }
 
-    return back()->withErrors(['email' => 'Giriş bilgileri hatalı.']);
-}
-
-    // Çıkış
     public function logout(Request $request)
     {
-        auth()->logout();
+        Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login');
+        return redirect('/login');
     }
 }
