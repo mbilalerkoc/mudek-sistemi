@@ -5,112 +5,167 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Repositories\Interfaces\CourseRepositoryInterface;
+use App\Repositories\Interfaces\AcademicTitleRepositoryInterface;
 use App\Services\CourseService;
+use App\Services\UserService;
 
 class AdminController extends Controller
 {
     public function __construct(
         private UserRepositoryInterface $userRepository,
         private CourseRepositoryInterface $courseRepository,
-        private CourseService $courseService
+        private AcademicTitleRepositoryInterface $academicTitleRepository,
+        private CourseService $courseService,
+        private UserService $userService
     ) {}
 
-    public function index()
+    // --- DASHBOARD ---
+    public function dashboard()
     {
         return view('admin.dashboard');
     }
 
-    public function teachers()
+    // ==========================================
+    // USER MANAGEMENT (KULLANICI YÖNETİMİ)
+    // ==========================================
+
+    public function userIndex()
     {
-        $teachers = $this->userRepository->getByRole('teacher');
-        return view('admin.users', compact('teachers'));
+        $users = $this->userRepository->getAllWithTitles();
+        return view('admin.users.index', compact('users'));
     }
 
-    public function courses()
+    public function userCreate()
+    {
+        $academicTitles = $this->academicTitleRepository->all();
+        return view('admin.users.ekle', compact('academicTitles'));
+    }
+
+    public function userStore(Request $request)
+    {
+        $validated = $request->validate([
+            'name'              => 'required|string|max:255',
+            'surname'           => 'required|string|max:255',
+            'email'             => 'required|email|unique:users,email',
+            'password'          => 'required|min:8',
+            'role'              => 'required|in:super_admin,user',
+            'academic_title_id' => 'nullable|exists:academic_titles,id',
+        ]);
+
+        $this->userService->createUser($validated);
+
+        return redirect()->route('admin.users.index')->with('success', 'Kullanıcı başarıyla eklendi!');
+    }
+
+    public function userEdit($id)
+    {
+        $user = $this->userRepository->find($id);
+        $academicTitles = $this->academicTitleRepository->all();
+        
+        return view('admin.users.edit', compact('user', 'academicTitles'));
+    }
+
+    public function userUpdate(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'name'              => 'required|string|max:255',
+            'surname'           => 'required|string|max:255',
+            'email'             => 'required|email|unique:users,email,' . $id,
+            'password'          => 'nullable|min:8',
+            'role'              => 'required|in:super_admin,user',
+            'academic_title_id' => 'nullable|exists:academic_titles,id',
+        ]);
+
+        $this->userService->updateUser($id, $validated);
+
+        return redirect()->route('admin.users.index')->with('success', 'Kullanıcı başarıyla güncellendi!');
+    }
+
+    public function userDestroy($id)
+    {
+        $this->userRepository->delete($id);
+        return redirect()->route('admin.users.index')->with('success', 'Kullanıcı başarıyla silindi!');
+    }
+
+    // ==========================================
+    // COURSE MANAGEMENT (DERS YÖNETİMİ)
+    // ==========================================
+
+    public function courseIndex()
     {
         $courses = $this->courseRepository->allWithUsers();
-        $teachers = $this->userRepository->getByRole('teacher');
+        // NOT: Blade dosyasında $teachers değişkenini kullandığımız için adını tekrar teachers yaptık
+        $teachers = $this->userRepository->getByRole('user'); 
+        
         return view('admin.courses.index', compact('courses', 'teachers'));
     }
 
-    public function storeCourse(Request $request)
+    public function courseStore(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name'    => 'required|string|max:255',
             'code'    => 'required|string|unique:courses,code',
             'credits' => 'nullable|integer|min:1|max:10',
             'semester'=> 'nullable|string|max:50',
         ]);
 
-        $this->courseRepository->create([
-            'name'     => $request->name,
-            'code'     => $request->code,
-            'credits'  => $request->credits ?? 3,
-            'semester' => $request->semester,
-        ]);
+        $this->courseService->createCourse($validated);
 
         return redirect()->back()->with('success', 'Ders başarıyla eklendi!');
     }
 
-    public function editCourse($id)
+    public function courseEdit($id)
     {
         $course = $this->courseRepository->find($id);
-        $teachers = $this->userRepository->getByRole('teacher');
+        $teachers = $this->userRepository->getByRole('user');
+        
         return view('admin.courses.edit', compact('course', 'teachers'));
     }
 
-    public function updateCourse(Request $request, $id)
+    public function courseUpdate(Request $request, $id)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name'    => 'required|string|max:255',
             'code'    => 'required|string|unique:courses,code,' . $id,
             'credits' => 'nullable|integer|min:1|max:10',
             'semester'=> 'nullable|string|max:50',
         ]);
 
-        $this->courseRepository->update($id, [
-            'name'     => $request->name,
-            'code'     => $request->code,
-            'credits'  => $request->credits,
-            'semester' => $request->semester,
-        ]);
+        $this->courseService->updateCourse($id, $validated);
 
         return redirect()->route('admin.courses.index')->with('success', 'Ders başarıyla güncellendi!');
     }
 
-    public function deleteCourse($id)
+    public function courseDestroy($id)
     {
         $this->courseRepository->delete($id);
-
         return redirect()->route('admin.courses.index')->with('success', 'Ders başarıyla silindi!');
     }
 
+    // ==========================================
+    // COURSE - TEACHER ASSIGNMENTS (DERS ATAMALARI)
+    // ==========================================
+
     public function assignTeacher(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'course_id' => 'required|exists:courses,id',
             'user_id'   => 'required|exists:users,id',
         ]);
 
-        $this->courseService->assignTeacher(
-            $request->course_id,
-            $request->user_id
-        );
+        $this->courseService->assignTeacher($validated['course_id'], $validated['user_id']);
 
         return redirect()->back()->with('success', 'Öğretmen derse atandı!');
     }
 
     public function removeTeacher(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'course_id' => 'required|exists:courses,id',
             'user_id'   => 'required|exists:users,id',
         ]);
 
-        $this->courseService->removeTeacher(
-            $request->course_id,
-            $request->user_id
-        );
+        $this->courseService->removeTeacher($validated['course_id'], $validated['user_id']);
 
         return redirect()->back()->with('success', 'Öğretmen dersten çıkarıldı!');
     }

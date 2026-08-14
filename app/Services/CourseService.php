@@ -19,8 +19,21 @@ class CourseService
     }
 
     public function removeTeacher($courseId, $userId)
-{
-    $course = $this->courseRepository->find($courseId);
-    $course->users()->detach($userId);
-}
+    {
+        $course = $this->courseRepository->find($courseId);
+        $course->users()->detach($userId);
+    }
+
+    public function createCourse(array $data)
+    {
+        // Kredi girilmediyse varsayılan olarak 3 ata
+        $data['credits'] = $data['credits'] ?? 3;
+
+        return $this->courseRepository->create($data);
+    }
+
+    public function updateCourse($id, array $data)
+    {
+        return $this->courseRepository->update($id, $data);
+    }
 }

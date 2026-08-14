@@ -15,10 +15,10 @@
         </a>
     </li>
 
-    <li class="ktun-menu-item {{ request()->routeIs('admin.teachers.*') ? 'active' : '' }}">
-        <a href="{{ route('admin.teachers.index') }}">
+    <li class="ktun-menu-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+        <a href="{{ route('admin.users.index') }}">
             <i class="bi bi-people-fill"></i>
-            <span>Öğretmen Yönetimi</span>
+            <span>Kullanıcı Yönetimi</span>
         </a>
     </li>
 

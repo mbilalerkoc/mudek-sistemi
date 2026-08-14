@@ -21,18 +21,23 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware(['auth', 'super.admin'])->prefix('admin')->name('admin.')->group(function () {
     
     // Dashboard
-    Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
     // Öğretmenleri Listeleme
-    Route::get('/teachers', [AdminController::class, 'teachers'])->name('teachers.index');
+    Route::get('/users', [AdminController::class, 'userIndex'])->name('users.index');
+    Route::get('/users/ekle', [AdminController::class, 'userCreate'])->name('users.ekle');
+    Route::post('/users', [AdminController::class, 'userStore'])->name('users.store');
+    Route::get('/users/{id}/edit', [AdminController::class, 'userEdit'])->name('users.edit');
+    Route::put('/users/{id}', [AdminController::class, 'userUpdate'])->name('users.update');
+    Route::delete('/users/{id}', [AdminController::class, 'userDestroy'])->name('users.destroy');
 
     // Ders Yönetimi ve Atama
-    Route::get('/courses', [AdminController::class, 'courses'])->name('courses.index');
-    Route::post('/courses', [AdminController::class, 'storeCourse'])->name('courses.store');
+    Route::get('/courses', [AdminController::class, 'courseIndex'])->name('courses.index');
+    Route::post('/courses', [AdminController::class, 'courseStore'])->name('courses.store');
     Route::post('/courses/assign-teacher', [AdminController::class, 'assignTeacher'])->name('courses.assign');
-    Route::get('/courses/{id}/edit', [AdminController::class, 'editCourse'])->name('courses.edit');
-    Route::put('/courses/{id}', [AdminController::class, 'updateCourse'])->name('courses.update');
-    Route::delete('/courses/{id}', [AdminController::class, 'deleteCourse'])->name('courses.destroy');
+    Route::get('/courses/{id}/edit', [AdminController::class, 'courseEdit'])->name('courses.edit');
+    Route::put('/courses/{id}', [AdminController::class, 'courseUpdate'])->name('courses.update');
+    Route::delete('/courses/{id}', [AdminController::class, 'courseDestroy'])->name('courses.destroy');
 });
 
 // Kullanıcı Paneli
@@ -44,9 +49,7 @@ Route::prefix('user')->middleware(['auth'])->group(function () {
     Route::get('/dersler', [DersController::class, 'index'])->name('user.dersler');
     Route::get('/dersler/{id}', [DersController::class, 'dersDetay'])->name('user.ders.detay');
     Route::get('/dersler/{ders_id}/form/{form_id}', [DersController::class, 'formGoster'])->name('user.form.goster');
-
     Route::get('/dersler/{id}/notlari/duzenle', [DersController::class, 'notlariDuzenle'])->name('user.ders.notlari.duzenle');
-
     Route::post('/dersler/notlari/kaydet', [DersController::class, 'notlariKaydet'])->name('ders.notlari.kaydet');
     Route::post('/dersler/katki/kaydet', [DersController::class, 'katkilariniKaydet'])->name('ders.katki.kaydet');
 });

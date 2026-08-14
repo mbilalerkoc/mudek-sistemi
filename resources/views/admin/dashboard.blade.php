@@ -58,7 +58,7 @@
                     <a href="{{ route('admin.courses.index') }}" class="btn btn-primary px-4 py-2">
                         <i class="bi bi-journal-plus me-2"></i> Dersleri Yönet ve Ata
                     </a>
-                    <a href="{{ route('admin.teachers.index') }}" class="btn btn-secondary px-4 py-2">
+                    <a href="{{ route('admin.users.index') }}" class="btn btn-secondary px-4 py-2">
                         <i class="bi bi-person-lines-fill me-2"></i> Öğretmenleri Listele
                     </a>
                 </div>

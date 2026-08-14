@@ -51,6 +51,6 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
     }
     public function allWithUsers()
     {
-        return Course::with('users')->get();
+        return $this->model->with(['users.academicTitle'])->get();
     }
 }

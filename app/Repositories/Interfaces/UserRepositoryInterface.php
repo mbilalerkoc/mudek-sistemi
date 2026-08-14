@@ -6,4 +6,5 @@ interface UserRepositoryInterface extends BaseRepositoryInterface
 {
     public function findByEmail($email);
     public function getByRole($role);
+    public function getAllWithTitles();
 }
