@@ -17,7 +17,7 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
-// Admin Paneli
+//Süper Admin Paneli
 Route::middleware(['auth', 'super.admin'])->prefix('admin')->name('admin.')->group(function () {
     
     // Dashboard
@@ -30,6 +30,9 @@ Route::middleware(['auth', 'super.admin'])->prefix('admin')->name('admin.')->gro
     Route::get('/courses', [AdminController::class, 'courses'])->name('courses.index');
     Route::post('/courses', [AdminController::class, 'storeCourse'])->name('courses.store');
     Route::post('/courses/assign-teacher', [AdminController::class, 'assignTeacher'])->name('courses.assign');
+    Route::get('/courses/{id}/edit', [AdminController::class, 'editCourse'])->name('courses.edit');
+    Route::put('/courses/{id}', [AdminController::class, 'updateCourse'])->name('courses.update');
+    Route::delete('/courses/{id}', [AdminController::class, 'deleteCourse'])->name('courses.destroy');
 });
 
 // Kullanıcı Paneli

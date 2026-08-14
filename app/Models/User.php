@@ -13,11 +13,13 @@ class User extends Authenticatable
     use HasFactory, Notifiable, LogsActivity; // LogsActivity eklendi
 
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'role',
-    ];
+    'name',
+    'surname',
+    'email',
+    'password',
+    'role',
+    'academic_title_id',
+];
 
     protected $hidden = [
         'password',
@@ -42,5 +44,10 @@ class User extends Authenticatable
     // Bu öğretmenin dersleri
     public function courses() {
         return $this->belongsToMany(Course::class, 'user_courses', 'user_id', 'course_id');
+    }
+
+    public function academicTitle()
+    {
+        return $this->belongsTo(AcademicTitle::class, 'academic_title_id');
     }
 }

@@ -17,4 +17,10 @@ class CourseService
         $course = $this->courseRepository->find($courseId);
         $course->users()->syncWithoutDetaching([$userId]);
     }
+
+    public function removeTeacher($courseId, $userId)
+{
+    $course = $this->courseRepository->find($courseId);
+    $course->users()->detach($userId);
+}
 }

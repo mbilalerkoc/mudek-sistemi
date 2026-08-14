@@ -49,4 +49,8 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
 
         return compact('course', 'exams', 'students');
     }
+    public function allWithUsers()
+    {
+        return Course::with('users')->get();
+    }
 }

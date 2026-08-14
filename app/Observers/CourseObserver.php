@@ -3,7 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Course;
-
+use App\Models\Exam;
 class CourseObserver
 {
     /**

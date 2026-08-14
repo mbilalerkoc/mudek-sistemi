@@ -10,6 +10,8 @@ class SuperAdminMiddleware
 {
     public function handle(Request $request, Closure $next): Response
     {
+        \Log::info('Method: ' . $request->method());
+        \Log::info('Role: ' . auth()->user()?->role);
         // Kullanıcı giriş yapmış mı VE rolü super_admin mi?
         if (auth()->check() && auth()->user()->role === 'super_admin') {
             return $next($request);
