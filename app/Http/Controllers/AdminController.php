@@ -3,11 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
-use App\Models\Course;
+use App\Repositories\Interfaces\UserRepositoryInterface;
+use App\Repositories\Interfaces\CourseRepositoryInterface;
+use App\Services\CourseService;
 
 class AdminController extends Controller
 {
+    public function __construct(
+        private UserRepositoryInterface $userRepository,
+        private CourseRepositoryInterface $courseRepository,
+        private CourseService $courseService
+    ) {}
+
     public function index()
     {
         return view('admin.dashboard');
@@ -15,14 +22,14 @@ class AdminController extends Controller
 
     public function teachers()
     {
-        $teachers = User::where('role', '!=', 'super_admin')->get();
-        return view('admin.users', compact('teachers')); // users.blade.php kullanıyoruz
+        $teachers = $this->userRepository->getByRole('teacher');
+        return view('admin.users', compact('teachers'));
     }
 
     public function courses()
     {
-        $courses = Course::with(['users', 'exams'])->get();
-        $teachers = User::where('role', '!=', 'super_admin')->get();
+        $courses = $this->courseRepository->all();
+        $teachers = $this->userRepository->getByRole('teacher');
         return view('admin.courses.index', compact('courses', 'teachers'));
     }
 
@@ -33,10 +40,10 @@ class AdminController extends Controller
             'code' => 'required|string|unique:courses,code',
         ]);
 
-        Course::create([
-            'name' => $request->name,
-            'code' => $request->code,
-            'credit' => $request->credit ?? 3,
+        $this->courseRepository->create([
+            'name'    => $request->name,
+            'code'    => $request->code,
+            'credits' => $request->credits ?? 3,
         ]);
 
         return redirect()->back()->with('success', 'Ders başarıyla eklendi!');
@@ -46,11 +53,13 @@ class AdminController extends Controller
     {
         $request->validate([
             'course_id' => 'required|exists:courses,id',
-            'user_id' => 'required|exists:users,id',
+            'user_id'   => 'required|exists:users,id',
         ]);
 
-        $course = Course::find($request->course_id);
-        $course->users()->syncWithoutDetaching([$request->user_id]);
+        $this->courseService->assignTeacher(
+            $request->course_id,
+            $request->user_id
+        );
 
         return redirect()->back()->with('success', 'Öğretmen derse atandı!');
     }

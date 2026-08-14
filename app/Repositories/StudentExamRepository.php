@@ -14,16 +14,12 @@ class StudentExamRepository extends BaseRepository implements StudentExamReposit
 
     public function getByStudentCourse($studentCourseId)
     {
-        return $this->model
-            ->where('student_course_id', $studentCourseId)
-            ->get();
+        return $this->model->where('student_course_id', $studentCourseId)->get();
     }
 
     public function getByExam($examId)
     {
-        return $this->model
-            ->where('exam_id', $examId)
-            ->get();
+        return $this->model->where('exam_id', $examId)->get();
     }
 
     public function getByLevel($examId, $level)
@@ -45,8 +41,8 @@ class StudentExamRepository extends BaseRepository implements StudentExamReposit
     public function findByStudentCourseWithExam($studentCourseId)
     {
         return $this->model
-            ->where('student_course_id', $studentCourseId)
             ->with('exam')
+            ->where('student_course_id', $studentCourseId)
             ->get();
     }
 }

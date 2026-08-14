@@ -1,25 +1,26 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Exam extends Model
 {
-    use HasFactory;
+    use HasFactory, LogsActivity;
 
     protected $guarded = [];
 
-    // Sınavın ait olduğu ders
-    public function course()
+    public function getActivitylogOptions(): LogOptions
     {
-        return $this->belongsTo(Course::class, 'course_id');
+        return LogOptions::defaults()
+            ->logOnly(['course_id', 'exam_type', 'exam_date', 'question_paper_path', 'answers_paper_path'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs()
+            ->setDescriptionForEvent(fn(string $eventName) => "Sınav {$eventName}");
     }
 
-    // Bu sınava ait öğrenci sınav/not kayıtları
-    public function studentExams()
-    {
-        return $this->hasMany(StudentExam::class, 'exam_id');
-    }
+    public function course() { return $this->belongsTo(Course::class, 'course_id'); }
+    public function studentExams() { return $this->hasMany(StudentExam::class, 'exam_id'); }
 }

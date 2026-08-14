@@ -1,37 +1,32 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class StudentExam extends Model
 {
+    use LogsActivity;
+
     protected $table = 'student_exams';
-    
     protected $guarded = [];
-protected $fillable = [
-    'student_course_id',
-    'exam_id',
-    'exam_score',
-    'assignment_score',
-    'total_score',
-];
-    // Hangi öğrenciye ait olduğu
-    public function student(): BelongsTo
+    protected $fillable = [
+        'student_course_id', 'exam_id',
+        'exam_score', 'assignment_score', 'total_score',
+    ];
+
+    public function getActivitylogOptions(): LogOptions
     {
-        return $this->belongsTo(Student::class, 'student_id');
+        return LogOptions::defaults()
+            ->logOnly(['student_course_id', 'exam_id', 'exam_score', 'assignment_score', 'total_score'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs()
+            ->setDescriptionForEvent(fn(string $eventName) => "Öğrenci sınav kaydı {$eventName}");
     }
 
-    // Hangi sınava ait olduğu
-    public function exam(): BelongsTo
-    {
-        return $this->belongsTo(Exam::class, 'exam_id');
-    }
-
-    // Hangi öğrenci-kurs kaydına ait olduğu
-    public function studentCourse(): BelongsTo
-    {
-        return $this->belongsTo(StudentCourse::class, 'student_course_id');
-    }
+    public function student(): BelongsTo { return $this->belongsTo(Student::class, 'student_id'); }
+    public function exam(): BelongsTo { return $this->belongsTo(Exam::class, 'exam_id'); }
+    public function studentCourse(): BelongsTo { return $this->belongsTo(StudentCourse::class, 'student_course_id'); }
 }

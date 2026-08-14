@@ -1,22 +1,25 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class ExamPaper extends Model
 {
+    use LogsActivity;
+
     protected $fillable = ['course_id', 'exam_type', 'question_paper_path', 'answer_key_path', 'exam_date'];
 
-    // Bu sınavın ait olduğu ders
-    public function course()
-{
-    return $this->belongsTo(Course::class, 'course_id');
-}
-
-    // Bu sınavın öğrenci kağıtları
-    public function studentPapers()
+    public function getActivitylogOptions(): LogOptions
     {
-        return $this->hasMany(StudentPaper::class);
+        return LogOptions::defaults()
+            ->logOnly(['course_id', 'exam_type', 'question_paper_path', 'answer_key_path', 'exam_date'])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs()
+            ->setDescriptionForEvent(fn(string $eventName) => "Sınav kağıdı {$eventName}");
     }
+
+    public function course() { return $this->belongsTo(Course::class, 'course_id'); }
+    public function studentPapers() { return $this->hasMany(StudentPaper::class); }
 }

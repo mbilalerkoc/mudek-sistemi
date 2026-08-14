@@ -14,16 +14,22 @@ class StudentCourseRepository extends BaseRepository implements StudentCourseRep
 
     public function getByStudent($studentId)
     {
-        return $this->model
-            ->where('student_id', $studentId)
-            ->get();
+        return $this->model->where('student_id', $studentId)->get();
     }
 
     public function getByCourse($courseId)
     {
-        return $this->model
-            ->where('course_id', $courseId)
-            ->get();
+        return $this->model->where('course_id', $courseId)->get();
+    }
+
+    public function updateAverage($id, $average, $status)
+    {
+        $record = $this->find($id);
+        $record->update([
+            'average' => $average,
+            'status'  => $status,
+        ]);
+        return $record;
     }
 
     public function findByStudentAndCourse($studentId, $courseId)
@@ -33,16 +39,4 @@ class StudentCourseRepository extends BaseRepository implements StudentCourseRep
             ->where('course_id', $courseId)
             ->first();
     }
-
-    public function updateAverage($id, $average, $status)
-    {
-        $record = $this->find($id);
-
-        $record->update([
-            'average' => $average,
-            'status' => $status,
-        ]);
-
-        return $record;
-    }
-}
+}   

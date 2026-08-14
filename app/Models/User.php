@@ -5,10 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, LogsActivity; // LogsActivity eklendi
 
     protected $fillable = [
         'name',
@@ -27,8 +29,18 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    // Activitylog ayarları
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['name', 'email', 'role']) // Hangi sütunlar loglanacak (Şifreyi güvenlik için hariç tuttuk)
+            ->logOnlyDirty() // Sadece değişen verileri kaydet
+            ->dontSubmitEmptyLogs() // Değişiklik yoksa boş log atma
+            ->setDescriptionForEvent(fn(string $eventName) => "Kullanıcı {$eventName}"); // Oluşturuldu, güncellendi gibi olay açıklamaları
+    }
+
     // Bu öğretmenin dersleri
     public function courses() {
-    return $this->belongsToMany(Course::class, 'user_courses', 'user_id', 'course_id');
-}
+        return $this->belongsToMany(Course::class, 'user_courses', 'user_id', 'course_id');
+    }
 }

@@ -3,9 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Course;
+use App\Repositories\Interfaces\CourseRepositoryInterface;
+
 class UserController extends Controller
 {
+    public function __construct(
+        private CourseRepositoryInterface $courseRepository
+    ) {}
+
     public function index()
     {
         return view('user.dashboard');
@@ -16,10 +21,9 @@ class UserController extends Controller
         return view('user.profile');
     }
 
-public function dersler()
-{
-    $courses = Course::all();
-    
-    return view('user.dersler', compact('courses'));
-}
+    public function dersler()
+    {
+        $courses = $this->courseRepository->getCoursesByTeacher(auth()->user());
+        return view('user.dersler.index', compact('courses'));
+    }
 }
