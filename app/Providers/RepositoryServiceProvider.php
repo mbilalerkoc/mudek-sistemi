@@ -64,6 +64,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(AssignmentSubmissionRepositoryInterface::class, AssignmentSubmissionRepository::class);
         $this->app->bind(QuestionRepositoryInterface::class, QuestionRepository::class);
         $this->app->bind(AnswerRepositoryInterface::class, AnswerRepository::class);
+        
     }
 
     public function boot(): void

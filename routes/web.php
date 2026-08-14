@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DersController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\StudentController;
 
 // Ana sayfa
 Route::get('/', function () {
@@ -38,6 +39,13 @@ Route::middleware(['auth', 'super.admin'])->prefix('admin')->name('admin.')->gro
     Route::get('/courses/{id}/edit', [AdminController::class, 'courseEdit'])->name('courses.edit');
     Route::put('/courses/{id}', [AdminController::class, 'courseUpdate'])->name('courses.update');
     Route::delete('/courses/{id}', [AdminController::class, 'courseDestroy'])->name('courses.destroy');
+
+    // Öğrenci Yönetimi
+    Route::get('/students', [StudentController::class, 'index'])->name('students.index');
+    Route::post('/students', [StudentController::class, 'store'])->name('students.store');
+    Route::get('/students/{id}/edit', [StudentController::class, 'edit'])->name('students.edit');
+    Route::put('/students/{id}', [StudentController::class, 'update'])->name('students.update');
+    Route::delete('/students/{id}', [StudentController::class, 'destroy'])->name('students.destroy');
 });
 
 // Kullanıcı Paneli

@@ -55,7 +55,7 @@
                                         <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-warning">
                                             <i class="bi bi-pencil-square"></i>
                                         </a>
-                                        <form action="{{ route('admin.users.delete', $user->id) }}" method="POST"
+                                        <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST"
                                             class="d-inline-block"
                                             onsubmit="return confirm('Bu kullanıcıyı silmek istediğinize emin misiniz?');">
                                             @csrf

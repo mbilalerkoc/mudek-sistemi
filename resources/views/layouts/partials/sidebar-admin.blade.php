@@ -22,6 +22,12 @@
         </a>
     </li>
 
+    <li class="ktun-menu-item {{ request()->routeIs('admin.students.*') ? 'active' : '' }}">
+        <a href="{{ route('admin.students.index') }}">
+            <i class="bi bi-mortarboard-fill"></i>
+            <span>Öğrenci Yönetimi</span>
+        </a>
+
     <li class="ktun-menu-title mt-2">HESAP</li>
 
     <li class="ktun-menu-item">

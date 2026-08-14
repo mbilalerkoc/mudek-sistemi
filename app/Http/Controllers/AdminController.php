@@ -48,7 +48,7 @@ class AdminController extends Controller
             'surname'           => 'required|string|max:255',
             'email'             => 'required|email|unique:users,email',
             'password'          => 'required|min:8',
-            'role'              => 'required|in:super_admin,user',
+            'role'              => 'required|in:super_admin,user,student',
             'academic_title_id' => 'nullable|exists:academic_titles,id',
         ]);
 
