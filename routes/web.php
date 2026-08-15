@@ -46,6 +46,12 @@ Route::middleware(['auth', 'super.admin'])->prefix('admin')->name('admin.')->gro
     Route::get('/students/{id}/edit', [StudentController::class, 'edit'])->name('students.edit');
     Route::put('/students/{id}', [StudentController::class, 'update'])->name('students.update');
     Route::delete('/students/{id}', [StudentController::class, 'destroy'])->name('students.destroy');
+
+    // Ders-Öğrenci İlişki Yönetimi
+    Route::get('/courses/{id}/ogrenciler', [AdminController::class, 'dersOgrencileri'])->name('courses.ogrenciler');
+    Route::post('/courses/{id}/ogrenci-ekle', [AdminController::class, 'dersOgrenciEkle'])->name('courses.ogrenci.ekle');
+    Route::delete('/courses/{id}/ogrenci-cikar/{student_id}', [AdminController::class, 'dersOgrenciCikar'])->name('courses.ogrenci.cikar');
+    Route::delete('/courses/{id}/ogrenci-cikar-toplu', [AdminController::class, 'dersOgrenciCikarToplu'])->name('courses.ogrenci.cikar.toplu');
 });
 
 // Kullanıcı Paneli

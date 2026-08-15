@@ -8,6 +8,8 @@ use App\Repositories\Interfaces\CourseRepositoryInterface;
 use App\Repositories\Interfaces\AcademicTitleRepositoryInterface;
 use App\Services\CourseService;
 use App\Services\UserService;
+use App\Repositories\Interfaces\StudentCourseRepositoryInterface;
+use App\Repositories\Interfaces\StudentRepositoryInterface;
 
 class AdminController extends Controller
 {
@@ -16,7 +18,9 @@ class AdminController extends Controller
         private CourseRepositoryInterface $courseRepository,
         private AcademicTitleRepositoryInterface $academicTitleRepository,
         private CourseService $courseService,
-        private UserService $userService
+        private UserService $userService,
+        private StudentCourseRepositoryInterface $studentCourseRepository,
+        private StudentRepositoryInterface $studentRepository
     ) {}
 
     // --- DASHBOARD ---
@@ -91,14 +95,14 @@ class AdminController extends Controller
     // COURSE MANAGEMENT (DERS YÖNETİMİ)
     // ==========================================
 
-    public function courseIndex()
-    {
-        $courses = $this->courseRepository->allWithUsers();
-        // NOT: Blade dosyasında $teachers değişkenini kullandığımız için adını tekrar teachers yaptık
-        $teachers = $this->userRepository->getByRole('user'); 
-        
-        return view('admin.courses.index', compact('courses', 'teachers'));
-    }
+        public function courseIndex()
+        {
+            $courses = $this->courseRepository->allWithUsers();
+            // NOT: Blade dosyasında $teachers değişkenini kullandığımız için adını tekrar teachers yaptık
+            $users = $this->userRepository->getByRole('user'); 
+            
+            return view('admin.courses.index', compact('courses', 'users'));
+        }
 
     public function courseStore(Request $request)
     {
@@ -117,9 +121,9 @@ class AdminController extends Controller
     public function courseEdit($id)
     {
         $course = $this->courseRepository->find($id);
-        $teachers = $this->userRepository->getByRole('user');
+        $users = $this->userRepository->getByRole('user');
         
-        return view('admin.courses.edit', compact('course', 'teachers'));
+        return view('admin.courses.edit', compact('course', 'users'));
     }
 
     public function courseUpdate(Request $request, $id)
@@ -169,4 +173,50 @@ class AdminController extends Controller
 
         return redirect()->back()->with('success', 'Öğretmen dersten çıkarıldı!');
     }
+
+    public function dersOgrencileri($id)
+    {
+        $course = $this->courseRepository->find($id);
+        $kayitliOgrenciler = $this->studentCourseRepository->getByCourse($id);
+        $kayitliIds = $kayitliOgrenciler->pluck('student_id');
+        $tumOgrenciler = $this->studentRepository->all();
+        $kayitsizOgrenciler = $tumOgrenciler->whereNotIn('id', $kayitliIds);
+
+        return view('admin.courses.ogrenciler', compact('course', 'kayitliOgrenciler', 'kayitsizOgrenciler'));
+    }
+
+public function dersOgrenciEkle(Request $request, $id)
+{
+    $request->validate([
+        'student_ids'   => 'required|array',
+        'student_ids.*' => 'exists:students,id',
+    ]);
+
+    foreach ($request->student_ids as $studentId) {
+        $this->courseService->enrollStudent($id, $studentId);
+    }
+
+    return redirect()->back()->with('success', count($request->student_ids) . ' öğrenci derse eklendi!');
+}
+
+public function dersOgrenciCikar($id, $student_id)
+{
+    $this->courseService->unenrollStudent($id, $student_id);
+
+    return redirect()->back()->with('success', 'Öğrenci dersten başarıyla çıkarıldı!');
+}
+
+public function dersOgrenciCikarToplu(Request $request, $id)
+{
+    $request->validate([
+        'student_ids'   => 'required|array',
+        'student_ids.*' => 'exists:students,id',
+    ]);
+
+    foreach ($request->student_ids as $studentId) {
+        $this->courseService->unenrollStudent($id, $studentId);
+    }
+
+    return redirect()->back()->with('success', count($request->student_ids) . ' öğrenci dersten çıkarıldı!');
+}
 }

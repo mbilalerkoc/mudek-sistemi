@@ -63,7 +63,10 @@
                                             <td>
                                                 {{-- Öğretmen Unvan + Ad + Soyad yazdırma alanı --}}
                                                 @forelse($course->users as $teacher)
-                                                    {{ optional($teacher->academicTitle)->title }} {{ $teacher->name }} {{ $teacher->surname }}@if(!$loop->last), @endif
+                                                    {{ optional($teacher->academicTitle)->title }} {{ $teacher->name }}
+                                                    {{ $teacher->surname }}@if (!$loop->last)
+                                                        ,
+                                                    @endif
                                                 @empty
                                                     <span class="text-muted">-</span>
                                                 @endforelse
@@ -85,6 +88,10 @@
                                                         <i class="bi bi-trash"></i>
                                                     </button>
                                                 </form>
+                                                <a href="{{ route('admin.courses.ogrenciler', $course->id) }}"
+                                                    class="btn btn-sm btn-info me-1">
+                                                    <i class="bi bi-people"></i>
+                                                </a>
                                             </td>
                                         </tr>
                                     @empty
@@ -112,7 +119,8 @@
                                     <select name="course_id" class="form-select" required>
                                         <option value="" disabled selected>Ders seçiniz</option>
                                         @foreach ($courses as $course)
-                                            <option value="{{ $course->id }}">{{ $course->code }} - {{ $course->name }}</option>
+                                            <option value="{{ $course->id }}">{{ $course->code }} - {{ $course->name }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -120,9 +128,10 @@
                                     <label class="form-label">Öğretmen</label>
                                     <select name="user_id" class="form-select" required>
                                         <option value="">Öğretmen seçiniz</option>
-                                        @foreach ($teachers as $teacher)
-                                            <option value="{{ $teacher->id }}">
-                                                {{ optional($teacher->academicTitle)->title }} {{ $teacher->name }} {{ $teacher->surname }}
+                                        @foreach ($users as $user)
+                                            <option value="{{ $user->id }}">
+                                                {{ optional($user->academicTitle)->title }} {{ $user->name }}
+                                                {{ $user->surname }}
                                             </option>
                                         @endforeach
                                     </select>
@@ -172,8 +181,8 @@
 
                             <div class="mb-3">
                                 <label class="form-label">Dönem</label>
-                                <input type="text" name="semester" class="form-control" value="{{ old('semester') }}"
-                                    placeholder="Örn: 2024-2025 Güz">
+                                <input type="text" name="semester" class="form-control"
+                                    value="{{ old('semester') }}" placeholder="Örn: 2024-2025 Güz">
                             </div>
 
                             <button type="submit" class="btn btn-primary w-100">

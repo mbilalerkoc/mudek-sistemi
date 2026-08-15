@@ -11,4 +11,8 @@ interface StudentCourseRepositoryInterface
     public function findByStudentAndCourse($studentId, $courseId);
 
     public function updateAverage($id, $average, $status);
+
+    public function enroll($studentId, $courseId);
+
+    public function unenroll($studentId, $courseId);
 }

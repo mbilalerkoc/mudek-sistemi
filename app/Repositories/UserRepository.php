@@ -19,8 +19,8 @@ class UserRepository extends BaseRepository implements UserRepositoryInterface
 
     public function getByRole($role)
     {
-        return $this->model->where('role', 'teacher')->with('academicTitle')->get();
-    }
+        return $this->model->where('role', $role)->with('academicTitle')->get();
+    }   
 
     public function getAllWithTitles()
     {

@@ -39,4 +39,20 @@ class StudentCourseRepository extends BaseRepository implements StudentCourseRep
             ->where('course_id', $courseId)
             ->first();
     }
+
+    public function enroll($studentId, $courseId)
+    {
+        return $this->model->firstOrCreate([
+            'student_id' => $studentId,
+            'course_id'  => $courseId,
+    ]);
+}
+
+    public function unenroll($studentId, $courseId)
+    {
+        return $this->model
+            ->where('student_id', $studentId)
+            ->where('course_id', $courseId)
+            ->delete();
+    }
 }   
