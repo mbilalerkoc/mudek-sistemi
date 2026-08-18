@@ -15,11 +15,12 @@ Route::get('/', function () {
 // Login
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+Route::post('/password/direct-reset', [AuthController::class, 'directReset'])->name('password.direct-reset');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Süper Admin Paneli
 Route::middleware(['auth', 'super.admin'])->prefix('admin')->name('admin.')->group(function () {
-
+    Route::get('/login-history', [AdminController::class, 'loginHistory'])->name('login.history');
     // Dashboard
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 

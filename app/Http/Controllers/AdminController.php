@@ -29,10 +29,85 @@ class AdminController extends Controller
         return view('admin.dashboard');
     }
 
-    // ==========================================
-    // USER MANAGEMENT (KULLANICI YÖNETİMİ)
-    // ==========================================
+    public function loginHistory()
+{
+    // Tüm 'auth' loglarını kronolojik sırada çekiyoruz
+    $logs = \Spatie\Activitylog\Models\Activity::where('log_name', 'auth')
+                    ->with('causer')
+                    ->oldest()
+                    ->get();
 
+    $sessions = [];
+    $activeLogins = [];
+
+    foreach ($logs as $log) {
+        $userId = $log->causer_id;
+        if (!$userId) continue;
+
+        if ($log->description === 'Sisteme giriş yaptı') {
+            $activeLogins[$userId] = [
+                'user' => $log->causer,
+                'login_at' => $log->created_at,
+                'ip' => $log->properties['ip'] ?? '-',
+                'user_agent' => $log->properties['user_agent'] ?? '-',
+                'logout_at' => null,
+                'duration' => 'Devam ediyor...'
+            ];
+        } elseif ($log->description === 'Sistemden çıkış yaptı') {
+            if (isset($activeLogins[$userId])) {
+                $loginTime = $activeLogins[$userId]['login_at'];
+                $logoutTime = $log->created_at;
+                
+                // Süre hesaplama (Saniye cinsinden fark)
+                $diffInSeconds = $loginTime->diffInSeconds($logoutTime);
+                $duration = $this->formatDuration($diffInSeconds);
+
+                $activeLogins[$userId]['logout_at'] = $logoutTime;
+                $activeLogins[$userId]['duration'] = $duration;
+
+                $sessions[] = $activeLogins[$userId];
+                unset($activeLogins[$userId]);
+            } else {
+                // Giriş kaydı bulunamayıp direkt çıkış yapılan durumlar
+                $sessions[] = [
+                    'user' => $log->causer,
+                    'login_at' => null,
+                    'ip' => $log->properties['ip'] ?? '-',
+                    'user_agent' => $log->properties['user_agent'] ?? '-',
+                    'logout_at' => $log->created_at,
+                    'duration' => '-'
+                ];
+            }
+        }
+    }
+
+    // Hala çıkış yapmamış aktif oturumları da listeye ekleyelim
+    foreach ($activeLogins as $active) {
+        $sessions[] = $active;
+    }
+
+    // En yeni oturum en üstte olacak şekilde ters sıralama
+    $sessions = collect($sessions)->sortByDesc(function ($session) {
+        return $session['login_at'] ?? $session['logout_at'];
+    });
+
+    return view('admin.logs.login_history', compact('sessions'));
+}
+
+// Saniyeyi "X saat Y dk Z sn" formatına çeviren yardımcı metot
+private function formatDuration($seconds)
+{
+    $hours = floor($seconds / 3600);
+    $minutes = floor(($seconds / 60) % 60);
+    $secs = $seconds % 60;
+
+    $result = [];
+    if ($hours > 0) $result[] = "{$hours} sa";
+    if ($minutes > 0) $result[] = "{$minutes} dk";
+    if ($secs > 0 || empty($result)) $result[] = "{$secs} sn";
+
+    return implode(' ', $result);
+}
     public function userIndex()
     {
         $users = $this->userRepository->getAllWithTitles();
@@ -99,14 +174,10 @@ class AdminController extends Controller
     return redirect()->route('admin.users.index')->with('success', 'Kullanıcı başarıyla silindi!');
 }
 
-    // ==========================================
-    // COURSE MANAGEMENT (DERS YÖNETİMİ)
-    // ==========================================
 
         public function courseIndex()
         {
             $courses = $this->courseRepository->allWithUsers();
-            // NOT: Blade dosyasında $teachers değişkenini kullandığımız için adını tekrar teachers yaptık
             $users = $this->userRepository->getByRole('user'); 
             
             return view('admin.courses.index', compact('courses', 'users'));
@@ -161,10 +232,6 @@ class AdminController extends Controller
 
     return redirect()->route('admin.courses.index')->with('success', 'Ders başarıyla silindi!');
 }
-
-    // ==========================================
-    // COURSE - TEACHER ASSIGNMENTS (DERS ATAMALARI)
-    // ==========================================
 
     public function assignTeacher(Request $request)
     {

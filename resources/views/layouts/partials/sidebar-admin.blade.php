@@ -35,6 +35,13 @@
 
     <li class="ktun-menu-title mt-2">HESAP</li>
 
+    <li class="ktun-menu-item {{ request()->routeIs('admin.login.history') ? 'active' : '' }}">
+        <a href="{{ route('admin.login.history') }}" class='sidebar-link'>
+            <i class="bi bi-clock-history"></i>
+            <span>Giriş Geçmişi</span>
+        </a>
+    </li>
+
     <li class="ktun-menu-item">
         <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
             <i class="bi bi-box-arrow-left"></i>
