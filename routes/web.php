@@ -66,6 +66,7 @@ Route::prefix('user')->middleware(['auth'])->name('user.')->group(function () {
 
     Route::get('/dashboard', [UserController::class, 'index'])->name('dashboard');
     Route::get('/profile', [UserController::class, 'profile'])->name('profile');
+    Route::put('/profile', [UserController::class, 'profileUpdate'])->name('profile.update');
 
     // Dersler
     Route::get('/dersler', [DersController::class, 'index'])->name('dersler');
