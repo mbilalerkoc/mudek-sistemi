@@ -3,18 +3,32 @@
 @section('title', 'Ders Detay')
 
 @section('content')
+
+@php
+    $isAdmin = auth()->user()->role === 'super_admin';
+    $dashboardRoute = $isAdmin ? 'admin.dashboard' : 'user.dashboard';
+    $derslerRoute   = $isAdmin ? 'admin.dersler'   : 'user.dersler';
+    $formRoute      = $isAdmin ? 'admin.form.goster' : 'user.form.goster';
+@endphp
+
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
                 <div class="col-12 col-md-6 order-md-1 order-last">
                     <h3>{{ $course->name }}</h3>
-                    <p class="text-subtitle text-muted">{{ $course->code }} — Forma tıklayarak doldurmaya başlayabilirsin</p>
+                    <p class="text-subtitle text-muted">
+                        {{ $course->code }} — Forma tıklayarak doldurmaya başlayabilirsin
+                    </p>
                 </div>
                 <div class="col-12 col-md-6 order-md-2 order-first">
                     <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="{{ route('user.dashboard') }}">Dashboard</a></li>
-                            <li class="breadcrumb-item"><a href="{{ route('user.dersler') }}">Dersler</a></li>
+                            <li class="breadcrumb-item">
+                                <a href="{{ route($dashboardRoute) }}">Dashboard</a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{{ route($derslerRoute) }}">Dersler</a>
+                            </li>
                             <li class="breadcrumb-item active" aria-current="page">Ders Detay</li>
                         </ol>
                     </nav>
@@ -67,9 +81,9 @@
                                     <td class="fw-500">{{ $form['ad'] }}</td>
                                     <td class="text-muted">{{ $form['aciklama'] }}</td>
                                     <td class="text-center">
-                                        <a href="{{ route('user.form.goster', ['ders_id' => $course->id, 'form_id' => $form['id']]) }}"
+                                        <a href="{{ route($formRoute, ['ders_id' => $course->id, 'form_id' => $form['id']]) }}"
                                            class="btn btn-sm btn-primary-light">
-                                            Doldur
+                                            {{ $isAdmin ? 'Görüntüle' : 'Doldur' }}
                                         </a>
                                     </td>
                                 </tr>

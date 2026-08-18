@@ -2,6 +2,14 @@
 @section('title', $course->name . ' Formu')
 
 @section('content')
+
+@php
+    $isAdmin        = auth()->user()->role === 'super_admin';
+    $dashboardRoute = $isAdmin ? 'admin.dashboard' : 'user.dashboard';
+    $derslerRoute   = $isAdmin ? 'admin.dersler'   : 'user.dersler';
+    $detayRoute     = $isAdmin ? 'admin.ders.detay' : 'user.ders.detay';
+@endphp
+
 <div class="page-heading">
     <h3>{{ $course->name }} Formu</h3>
     <div class="page-title">
@@ -12,8 +20,15 @@
             <div class="col-12 col-md-6 order-md-2 order-first">
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{{ route('user.dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('user.dersler') }}">Dersler</a></li>
+                        <li class="breadcrumb-item">
+                            <a href="{{ route($dashboardRoute) }}">Dashboard</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="{{ route($derslerRoute) }}">Dersler</a>
+                        </li>
+                        <li class="breadcrumb-item">
+                            <a href="{{ route($detayRoute, $course->id) }}">{{ $course->name }}</a>
+                        </li>
                         <li class="breadcrumb-item active" aria-current="page">Form</li>
                     </ol>
                 </nav>
@@ -26,6 +41,10 @@
             @include('user.dersler.forms.notlar')
         @elseif($form_id == 2)
             @include('user.dersler.forms.odevler')
+        @elseif($form_id == 3)
+            @include('user.dersler.forms.sinav-kagitlari')
+        @elseif($form_id == 4)
+            @include('user.dersler.forms.ogrenci-kagitlari')
         @else
             <div class="alert alert-warning">Form bulunamadı.</div>
         @endif

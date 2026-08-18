@@ -86,10 +86,18 @@ class AdminController extends Controller
     }
 
     public function userDestroy($id)
-    {
-        $this->userRepository->delete($id);
-        return redirect()->route('admin.users.index')->with('success', 'Kullanıcı başarıyla silindi!');
-    }
+{
+    $user = $this->userRepository->find($id);
+
+    activity()
+        ->performedOn($user)
+        ->withProperties(['name' => $user->name, 'email' => $user->email])
+        ->log('Kullanıcı silindi');
+
+    $this->userRepository->delete($id);
+
+    return redirect()->route('admin.users.index')->with('success', 'Kullanıcı başarıyla silindi!');
+}
 
     // ==========================================
     // COURSE MANAGEMENT (DERS YÖNETİMİ)
@@ -141,10 +149,18 @@ class AdminController extends Controller
     }
 
     public function courseDestroy($id)
-    {
-        $this->courseRepository->delete($id);
-        return redirect()->route('admin.courses.index')->with('success', 'Ders başarıyla silindi!');
-    }
+{
+    $course = $this->courseRepository->find($id);
+
+    activity()
+        ->performedOn($course)
+        ->withProperties(['code' => $course->code, 'name' => $course->name])
+        ->log('Ders silindi');
+
+    $this->courseRepository->delete($id);
+
+    return redirect()->route('admin.courses.index')->with('success', 'Ders başarıyla silindi!');
+}
 
     // ==========================================
     // COURSE - TEACHER ASSIGNMENTS (DERS ATAMALARI)

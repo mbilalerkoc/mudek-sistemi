@@ -28,10 +28,6 @@
 
             <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
                 <h4 class="card-title mb-0 text-primary">{{ $course->name }} - Notları Güncelle</h4>
-
-                <a href="{{ route('user.ders.detay', $course->id) }}" class="btn btn-secondary px-4">
-                    İptal
-                </a>
             </div>
 
             <div class="card-body">
@@ -107,7 +103,7 @@
                         </table>
                     </div>
                     <div class="mt-4 text-end">
-                        <a href="{{ route('user.ders.detay', $course->id) }}" class="btn btn-secondary px-4 me-2">İptal</a>
+                        <a href="{{ route('user.form.goster', ['ders_id' => $course->id, 'form_id' => 1]) }}" class="btn btn-secondary px-4 me-2">İptal</a>x
                         <button type="submit" class="btn btn-primary px-5 py-2 fw-bold">
                             <i class="bi bi-check-lg me-1"></i>
                             Notları Kaydet

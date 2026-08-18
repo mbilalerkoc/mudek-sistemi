@@ -62,11 +62,20 @@
                     <img src="{{ asset('assets/compiled/jpg/1.jpg') }}" alt="Profil">
                 </div>
                 <div class="ktun-sidebar-username">
-                    {{ auth()->check() ? auth()->user()->name : 'Kullanıcı' }}
+                    {{ auth()->check() ? auth()->user()->name . ' ' . auth()->user()->surname : 'Kullanıcı' }}
                     <i class="bi bi-chevron-down ms-1" style="font-size:0.7rem;"></i>
                 </div>
+
                 @if (auth()->check())
-                    <div class="ktun-sidebar-meta">Öğr. No: 000000</div>
+                    <div class="ktun-sidebar-meta">
+                        @if (auth()->user()->role === 'super_admin')
+                            <span class="badge bg-danger">Süper Admin</span>
+                        @elseif(auth()->user()->academicTitle)
+                            {{ auth()->user()->academicTitle->title }}
+                        @else
+                            Akademisyen
+                        @endif
+                    </div>
                 @endif
             </div>
 
