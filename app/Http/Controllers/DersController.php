@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Repositories\Interfaces\CourseRepositoryInterface;
 use App\Services\GradeService;
+use App\Enums\Messages\ExamMessages;
+use App\Enums\Messages\FormMessages;
 
 class DersController extends Controller
 {
@@ -35,17 +37,30 @@ class DersController extends Controller
         return view('user.dersler.detay', compact('course'));
     }
 
-    // Her iki panel için aynı form sayfası
     public function formGoster($ders_id, $form_id)
-    {
-        $data = $this->courseRepository->getCourseDetailsForForm($ders_id);
+{
+    $validForms = [1, 2, 3, 4];
 
-        $course   = $data['course'];
-        $exams    = $data['exams'];
-        $students = $data['students'];
-
-        return view('user.dersler.forms.index', compact('course', 'form_id', 'exams', 'students'));
+    if (!in_array((int) $form_id, $validForms)) {
+        return redirect()->back()->with('warning', 'Form bulunamadı.');
     }
+
+    $data = $this->courseRepository->getCourseDetailsForForm($ders_id);
+
+    $course   = $data['course'];
+    $exams    = $data['exams'];
+    $students = $data['students'];
+
+    $isAdmin        = auth()->user()->role === 'super_admin';
+    $dashboardRoute = $isAdmin ? 'admin.dashboard' : 'user.dashboard';
+    $derslerRoute   = $isAdmin ? 'admin.dersler'   : 'user.dersler';
+    $detayRoute     = $isAdmin ? 'admin.ders.detay' : 'user.ders.detay';
+
+    return view('user.dersler.forms.index', compact(
+        'course', 'form_id', 'exams', 'students',
+        'isAdmin', 'dashboardRoute', 'derslerRoute', 'detayRoute'
+    ));
+}
 
     public function notlariDuzenle($id)
     {
@@ -69,7 +84,7 @@ class DersController extends Controller
 
         return redirect()
             ->route($routeName, $request->input('course_id'))
-            ->with('success', 'Notlar başarıyla kaydedildi!');
+            ->with('success', ExamMessages::GRADES_SAVED->value);
     }
 
     public function katkilariniKaydet(Request $request)
@@ -85,6 +100,6 @@ class DersController extends Controller
 
         return redirect()
             ->route($routeName)
-            ->with('success', 'Form başarıyla kaydedildi!');
+            ->with('success', FormMessages::FORM_SAVED->value);
     }
 }

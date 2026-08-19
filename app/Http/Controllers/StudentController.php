@@ -7,6 +7,7 @@ use App\Repositories\Interfaces\StudentRepositoryInterface;
 use App\Services\StudentService;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\StudentsImport;
+use App\Enums\Messages\StudentMessages;
 
 class StudentController extends Controller
 {
@@ -22,19 +23,19 @@ class StudentController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'name'       => 'required|string|max:255',
-            'surname'    => 'required|string|max:255',
-            'student_no' => 'required|string|unique:students,student_no',
-        ], [
-            'student_no.unique' => 'Bu öğrenci numarası zaten kayıtlı.'
-        ]);
+{
+    $validated = $request->validate([
+        'name'       => 'required|string|max:255',
+        'surname'    => 'required|string|max:255',
+        'student_no' => 'required|string|unique:students,student_no',
+    ], [
+        'student_no.unique' => 'Bu öğrenci numarası zaten kayıtlı.'
+    ]);
 
-        $this->studentService->createStudent($validated);
+    $this->studentService->createStudent($validated);
 
-        return redirect()->back()->with('success', 'Öğrenci başarıyla eklendi!');
-    }
+    return redirect()->back()->with('success', StudentMessages::CREATED->value);
+}
 
     public function edit($id)
     {
@@ -52,7 +53,7 @@ class StudentController extends Controller
 
         $this->studentService->updateStudent($id, $validated);
 
-        return redirect()->route('admin.students.index')->with('success', 'Öğrenci bilgileri güncellendi!');
+        return redirect()->route('admin.students.index')->with('success', StudentMessages::UPDATED->value);
     }
 
     public function destroy($id)
@@ -66,7 +67,7 @@ class StudentController extends Controller
 
         $this->studentRepository->delete($id);
 
-        return redirect()->route('admin.students.index')->with('success', 'Öğrenci sistemden silindi!');
+        return redirect()->route('admin.students.index')->with('success', StudentMessages::DELETED->value);
     }
 
     public function importExcel(Request $request)
@@ -104,6 +105,6 @@ class StudentController extends Controller
 
     $msg = $import->getImportedCount() . ' öğrenci başarıyla eklendi.';
 
-    return redirect()->route('admin.students.index')->with('success', $msg);
+    return redirect()->with('success', count($students) . ' ' . StudentMessages::BULK_IMPORTED->value);
 }
 }

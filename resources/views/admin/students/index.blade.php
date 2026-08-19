@@ -23,13 +23,6 @@
     </div>
 
     <section class="section">
-        @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        @endif
-
         <div class="row">
             {{-- SOL: Öğrenci Listesi --}}
             <div class="col-12 col-lg-8">
@@ -58,21 +51,17 @@
                                                     class="btn btn-sm btn-warning me-1">
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
-                                                <form action="{{ route('admin.students.destroy', $student->id) }}"
-                                                    method="POST" class="d-inline"
-                                                    onsubmit="return confirm('Bu öğrenciyi silmek istediğinize emin misiniz?')">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </form>
+                                                
+                                                {{-- Modern Sayfa İçi Modali Tetikleyen Buton --}}
+                                                <button type="button" class="btn btn-sm btn-danger delete-btn" 
+                                                        data-url="{{ route('admin.students.destroy', $student->id) }}">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
                                             </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="3" class="text-center text-muted py-4">Henüz kayıtlı öğrenci
-                                                yok.</td>
+                                            <td colspan="3" class="text-center text-muted py-4">Henüz kayıtlı öğrenci yok.</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
@@ -82,7 +71,7 @@
                 </div>
             </div>
 
-            {{-- SAĞ: Yeni Öğrenci Ekleme Formu --}}
+            {{-- SAĞ: Yeni Öğrenci Ekleme ve Excel Formları --}}
             <div class="col-12 col-lg-4">
                 <div class="card">
                     <div class="card-header">Yeni Öğrenci Ekle</div>
@@ -126,6 +115,7 @@
                         </form>
                     </div>
                 </div>
+
                 {{-- Excel Import Kartı --}}
                 <div class="card mt-3">
                     <div class="card-header d-flex align-items-center gap-2">
@@ -133,28 +123,6 @@
                         Excel ile Toplu Öğrenci Ekle
                     </div>
                     <div class="card-body">
-
-                        @if (session('import_errors'))
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                <strong>İçe aktarma sırasında hatalar oluştu:</strong>
-                                <ul class="mb-0 mt-2">
-                                    @foreach (session('import_errors') as $hata)
-                                        <li>{{ $hata }}</li>
-                                    @endforeach
-                                </ul>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                            </div>
-                        @endif
-
-                        @if (session('import_imported') !== null)
-                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                <strong>Kısmi içe aktarma:</strong>
-                                {{ session('import_imported') }} öğrenci eklendi,
-                                {{ session('import_skipped') }} öğrenci atlandı.
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                            </div>
-                        @endif
-
                         <form action="{{ route('admin.students.import') }}" method="POST" enctype="multipart/form-data"
                             id="importForm">
                             @csrf
@@ -184,48 +152,34 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </section>
+
+    {{-- Modern Silme Onay Modali (Sayfa İçin Ortak) --}}
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true" style="background: rgba(0,0,0,0.5);">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title text-white">Silme Onayı</h5>
+                    <button type="button" class="btn-close btn-close-white" id="closeDeleteModalBtn"></button>
+                </div>
+                <div class="modal-body py-4">
+                    <p class="mb-0">Bu öğrenciyi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancelDeleteBtn">İptal</button>
+                    <form id="deleteForm" method="POST" class="d-inline">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger">Evet</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
+
 @push('scripts')
-    <script>
-        const fileInput = document.getElementById('excel_file');
-        const importBtn = document.getElementById('importBtn');
-        const fileError = document.getElementById('file-error');
-        const validTypes = ['application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'application/vnd.ms-excel',
-            'text/csv'
-        ];
-        const validExts = ['.xlsx', '.xls', '.csv'];
-
-        fileInput.addEventListener('change', function() {
-            const file = this.files[0];
-            fileError.style.display = 'none';
-            fileError.textContent = '';
-            importBtn.disabled = true;
-
-            if (!file) return;
-
-            // Uzantı kontrolü
-            const ext = '.' + file.name.split('.').pop().toLowerCase();
-            if (!validExts.includes(ext)) {
-                fileError.textContent = 'Geçersiz dosya formatı! Sadece .xlsx, .xls veya .csv yükleyebilirsiniz.';
-                fileError.style.display = 'block';
-                this.value = '';
-                return;
-            }
-
-            // Boyut kontrolü (2MB)
-            if (file.size > 2 * 1024 * 1024) {
-                fileError.textContent = 'Dosya boyutu 2MB\'ı aşamaz!';
-                fileError.style.display = 'block';
-                this.value = '';
-                return;
-            }
-
-            // Her şey tamam, butonu aktif et
-            importBtn.disabled = false;
-        });
-    </script>
+    <script src="{{ asset('assets/js/custom/excel-validation.js') }}"></script>
+    <script src="{{ asset('assets/js/custom/delete-modal.js') }}"></script>
 @endpush

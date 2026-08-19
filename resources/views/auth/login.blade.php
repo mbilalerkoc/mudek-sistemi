@@ -13,14 +13,6 @@
                 <h1 class="auth-title" style="color: var(--ktun-text);">Giriş Yap</h1>
                 <p class="auth-subtitle mb-4" style="color: var(--ktun-card-text);">Kurumsal e-posta adresiniz ve şifreniz ile sisteme giriş yapın.</p>
 
-                {{-- Hata ve Başarı Mesajları --}}
-                @if ($errors->any())
-                    <div class="alert alert-danger">{{ $errors->first() }}</div>
-                @endif
-                @if (session('success'))
-                    <div class="alert alert-success">{{ session('success') }}</div>
-                @endif
-
                 <form action="{{ route('login.post') }}" method="POST">
                     @csrf
 
@@ -91,19 +83,5 @@
         </div>
     </div>
 
-    <script>
-        // Şifre Göster/Gizle
-        document.getElementById('togglePassword').addEventListener('click', function() {
-            const p = document.getElementById('password');
-            const icon = document.getElementById('toggleIcon');
-            p.type = (p.type === 'password') ? 'text' : 'password';
-            icon.className = (p.type === 'password') ? 'bi bi-eye-slash' : 'bi bi-eye';
-        });
-
-        // Modal Yönetimi
-        const modal = document.getElementById('forgotPasswordModal');
-        document.getElementById('openForgotModal').addEventListener('click', (e) => { e.preventDefault(); modal.style.display = 'block'; modal.classList.add('show'); });
-        document.getElementById('closeForgotModalBtn').addEventListener('click', () => { modal.style.display = 'none'; modal.classList.remove('show'); });
-        document.getElementById('cancelForgotModalBtn').addEventListener('click', () => { modal.style.display = 'none'; modal.classList.remove('show'); });
-    </script>
+    <script src="{{ asset('assets/js/custom/auth.js') }}"></script>
 @endsection

@@ -2,14 +2,6 @@
 @section('title', $course->name . ' Formu')
 
 @section('content')
-
-@php
-    $isAdmin        = auth()->user()->role === 'super_admin';
-    $dashboardRoute = $isAdmin ? 'admin.dashboard' : 'user.dashboard';
-    $derslerRoute   = $isAdmin ? 'admin.dersler'   : 'user.dersler';
-    $detayRoute     = $isAdmin ? 'admin.ders.detay' : 'user.ders.detay';
-@endphp
-
 <div class="page-heading">
     <h3>{{ $course->name }} Formu</h3>
     <div class="page-title">
@@ -45,8 +37,6 @@
             @include('user.dersler.forms.sinav-kagitlari')
         @elseif($form_id == 4)
             @include('user.dersler.forms.ogrenci-kagitlari')
-        @else
-            <div class="alert alert-warning">Form bulunamadı.</div>
         @endif
     </section>
 </div>

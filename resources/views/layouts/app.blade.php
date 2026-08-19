@@ -92,6 +92,7 @@
         {{-- ==================== ANA İÇERİK ==================== --}}
         <div id="ktun-main">
             <div id="ktun-content">
+                @include('layouts.partials.alerts')
                 @yield('content')
             </div>
             <footer class="ktun-footer">
@@ -105,25 +106,7 @@
     <script src="{{ asset('assets/extensions/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
     <script src="{{ asset('assets/compiled/js/app.js') }}"></script>
 
-    <script>
-        document.getElementById('sidebarToggle').addEventListener('click', function() {
-            document.getElementById('ktun-sidebar').classList.toggle('collapsed');
-            document.getElementById('ktun-main').classList.toggle('expanded');
-        });
-        document.addEventListener('DOMContentLoaded', function() {
-            // Burger butonunu ID'sinden yakalıyoruz
-            const sidebarToggleBtn = document.getElementById('sidebarToggle');
-
-            if (sidebarToggleBtn) {
-                sidebarToggleBtn.addEventListener('click', function(event) {
-                    event.preventDefault(); // Sayfa yenilenmesini engeller
-
-                    // Body etiketine 'sidebar-collapsed' sınıfını ekler/çıkarır
-                    document.body.classList.toggle('sidebar-collapsed');
-                });
-            }
-        });
-    </script>
+    <script src="{{ asset('assets/js/custom/sidebar-toggle.js') }}"></script>
 
     @stack('scripts')
 

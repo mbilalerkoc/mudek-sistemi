@@ -25,12 +25,6 @@
 
 <section class="section">
 
-    @if (session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
 
     <div class="row">
 
@@ -171,15 +165,5 @@
 @endsection
 
 @push('scripts')
-<script>
-    // Sol: Tümünü seç/kaldır
-    document.getElementById('selectAllKayitli').addEventListener('change', function () {
-        document.querySelectorAll('.kayitli-check').forEach(cb => cb.checked = this.checked);
-    });
-
-    // Sağ: Tümünü seç/kaldır
-    document.getElementById('selectAllKayitsiz').addEventListener('change', function () {
-        document.querySelectorAll('.kayitsiz-check').forEach(cb => cb.checked = this.checked);
-    });
-</script>
+    <script src="{{ asset('assets/js/custom/course-students.js') }}"></script>
 @endpush

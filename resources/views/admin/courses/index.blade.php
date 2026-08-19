@@ -23,14 +23,6 @@
     </div>
 
     <section class="section">
-        {{-- Başarı / Hata mesajı --}}
-        @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        @endif
-
         <div class="row">
 
             {{-- SOL: Ders Listesi --}}
@@ -61,12 +53,9 @@
                                             <td>{{ $course->credits ?? '-' }}</td>
                                             <td>{{ $course->semester ?? '-' }}</td>
                                             <td>
-                                                {{-- Öğretmen Unvan + Ad + Soyad yazdırma alanı --}}
                                                 @forelse($course->users as $teacher)
                                                     {{ optional($teacher->academicTitle)->title }} {{ $teacher->name }}
-                                                    {{ $teacher->surname }}@if (!$loop->last)
-                                                        ,
-                                                    @endif
+                                                    {{ $teacher->surname }}@if (!$loop->last),@endif
                                                 @empty
                                                     <span class="text-muted">-</span>
                                                 @endforelse
@@ -78,16 +67,18 @@
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
 
-                                                {{-- Sil --}}
+                                                {{-- Sil (Modern Modal Tetikleyici) --}}
                                                 <form action="{{ route('admin.courses.destroy', $course->id) }}"
-                                                    method="POST" class="d-inline"
-                                                    onsubmit="return confirm('Bu dersi silmek istediğine emin misin?')">
+                                                    method="POST" class="d-inline">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger">
+                                                    <button type="button" class="btn btn-sm btn-danger delete-btn" 
+                                                            data-url="{{ route('admin.courses.destroy', $course->id) }}">
                                                         <i class="bi bi-trash"></i>
                                                     </button>
                                                 </form>
+
+                                                {{-- Öğrenciler --}}
                                                 <a href="{{ route('admin.courses.ogrenciler', $course->id) }}"
                                                     class="btn btn-sm btn-info me-1">
                                                     <i class="bi bi-people"></i>
@@ -195,4 +186,32 @@
 
         </div>
     </section>
+
+    {{-- Modern Silme Onay Modali --}}
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true" style="background: rgba(0,0,0,0.5);">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title text-white">Silme Onayı</h5>
+                    <button type="button" class="btn-close btn-close-white" id="closeDeleteModalBtn"></button>
+                </div>
+                <div class="modal-body py-4">
+                    <p class="mb-0">Bu dersi silmek istediğinize emin misiniz? Bu işlem geri alınamaz.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancelDeleteBtn">İptal</button>
+                    <form id="deleteForm" method="POST" class="d-inline">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger">Evet</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
+
+@push('scripts')
+    {{-- Harici Modüler Silme Scripti Çağrılıyor --}}
+    <script src="{{ asset('assets/js/custom/delete-modal.js') }}"></script>
+@endpush

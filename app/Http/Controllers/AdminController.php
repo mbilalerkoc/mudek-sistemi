@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Enums\Messages\UserMessages;
+use App\Enums\Messages\CourseMessages;
+use App\Enums\Messages\StudentMessages;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Repositories\Interfaces\CourseRepositoryInterface;
 use App\Repositories\Interfaces\AcademicTitleRepositoryInterface;
@@ -23,13 +26,11 @@ class AdminController extends Controller
         private StudentRepositoryInterface $studentRepository
     ) {}
 
-    // --- DASHBOARD ---
     public function dashboard()
     {
         return view('admin.dashboard');
     }
-
-    public function loginHistory()
+     public function loginHistory()
 {
     // Tüm 'auth' loglarını kronolojik sırada çekiyoruz
     $logs = \Spatie\Activitylog\Models\Activity::where('log_name', 'auth')
@@ -108,6 +109,10 @@ private function formatDuration($seconds)
 
     return implode(' ', $result);
 }
+    // ==========================================
+    // USER MANAGEMENT
+    // ==========================================
+
     public function userIndex()
     {
         $users = $this->userRepository->getAllWithTitles();
@@ -133,14 +138,14 @@ private function formatDuration($seconds)
 
         $this->userService->createUser($validated);
 
-        return redirect()->route('admin.users.index')->with('success', 'Kullanıcı başarıyla eklendi!');
+        return redirect()->route('admin.users.index')
+                         ->with('success', UserMessages::CREATED->value);
     }
 
     public function userEdit($id)
     {
         $user = $this->userRepository->find($id);
         $academicTitles = $this->academicTitleRepository->all();
-        
         return view('admin.users.edit', compact('user', 'academicTitles'));
     }
 
@@ -157,31 +162,27 @@ private function formatDuration($seconds)
 
         $this->userService->updateUser($id, $validated);
 
-        return redirect()->route('admin.users.index')->with('success', 'Kullanıcı başarıyla güncellendi!');
+        return redirect()->route('admin.users.index')
+                         ->with('success', UserMessages::UPDATED->value);
     }
 
     public function userDestroy($id)
-{
-    $user = $this->userRepository->find($id);
+    {
+        $this->userRepository->delete($id);
+        return redirect()->route('admin.users.index')
+                         ->with('success', UserMessages::DELETED->value);
+    }
 
-    activity()
-        ->performedOn($user)
-        ->withProperties(['name' => $user->name, 'email' => $user->email])
-        ->log('Kullanıcı silindi');
+    // ==========================================
+    // COURSE MANAGEMENT
+    // ==========================================
 
-    $this->userRepository->delete($id);
-
-    return redirect()->route('admin.users.index')->with('success', 'Kullanıcı başarıyla silindi!');
-}
-
-
-        public function courseIndex()
-        {
-            $courses = $this->courseRepository->allWithUsers();
-            $users = $this->userRepository->getByRole('user'); 
-            
-            return view('admin.courses.index', compact('courses', 'users'));
-        }
+    public function courseIndex()
+    {
+        $courses = $this->courseRepository->allWithUsers();
+        $users = $this->userRepository->getByRole('user');
+        return view('admin.courses.index', compact('courses', 'users'));
+    }
 
     public function courseStore(Request $request)
     {
@@ -194,14 +195,14 @@ private function formatDuration($seconds)
 
         $this->courseService->createCourse($validated);
 
-        return redirect()->back()->with('success', 'Ders başarıyla eklendi!');
+        return redirect()->back()
+                         ->with('success', CourseMessages::CREATED->value);
     }
 
     public function courseEdit($id)
     {
         $course = $this->courseRepository->find($id);
         $users = $this->userRepository->getByRole('user');
-        
         return view('admin.courses.edit', compact('course', 'users'));
     }
 
@@ -216,22 +217,20 @@ private function formatDuration($seconds)
 
         $this->courseService->updateCourse($id, $validated);
 
-        return redirect()->route('admin.courses.index')->with('success', 'Ders başarıyla güncellendi!');
+        return redirect()->route('admin.courses.index')
+                         ->with('success', CourseMessages::UPDATED->value);
     }
 
     public function courseDestroy($id)
-{
-    $course = $this->courseRepository->find($id);
+    {
+        $this->courseRepository->delete($id);
+        return redirect()->route('admin.courses.index')
+                         ->with('success', CourseMessages::DELETED->value);
+    }
 
-    activity()
-        ->performedOn($course)
-        ->withProperties(['code' => $course->code, 'name' => $course->name])
-        ->log('Ders silindi');
-
-    $this->courseRepository->delete($id);
-
-    return redirect()->route('admin.courses.index')->with('success', 'Ders başarıyla silindi!');
-}
+    // ==========================================
+    // COURSE - USER ASSIGNMENTS
+    // ==========================================
 
     public function assignTeacher(Request $request)
     {
@@ -242,7 +241,8 @@ private function formatDuration($seconds)
 
         $this->courseService->assignTeacher($validated['course_id'], $validated['user_id']);
 
-        return redirect()->back()->with('success', 'Öğretmen derse atandı!');
+        return redirect()->back()
+                         ->with('success', CourseMessages::USER_ASSIGNED->value);
     }
 
     public function removeTeacher(Request $request)
@@ -254,8 +254,13 @@ private function formatDuration($seconds)
 
         $this->courseService->removeTeacher($validated['course_id'], $validated['user_id']);
 
-        return redirect()->back()->with('success', 'Öğretmen dersten çıkarıldı!');
+        return redirect()->back()
+                         ->with('success', CourseMessages::USER_REMOVED->value);
     }
+
+    // ==========================================
+    // COURSE - STUDENT MANAGEMENT
+    // ==========================================
 
     public function dersOgrencileri($id)
     {
@@ -268,38 +273,41 @@ private function formatDuration($seconds)
         return view('admin.courses.ogrenciler', compact('course', 'kayitliOgrenciler', 'kayitsizOgrenciler'));
     }
 
-public function dersOgrenciEkle(Request $request, $id)
-{
-    $request->validate([
-        'student_ids'   => 'required|array',
-        'student_ids.*' => 'exists:students,id',
-    ]);
+    public function dersOgrenciEkle(Request $request, $id)
+    {
+        $request->validate([
+            'student_ids'   => 'required|array',
+            'student_ids.*' => 'exists:students,id',
+        ]);
 
-    foreach ($request->student_ids as $studentId) {
-        $this->courseService->enrollStudent($id, $studentId);
+        foreach ($request->student_ids as $studentId) {
+            $this->courseService->enrollStudent($id, $studentId);
+        }
+
+        return redirect()->back()
+                         ->with('success', count($request->student_ids) . ' ' . CourseMessages::STUDENT_ENROLLED->value);
     }
 
-    return redirect()->back()->with('success', count($request->student_ids) . ' öğrenci derse eklendi!');
-}
+    public function dersOgrenciCikar($id, $student_id)
+    {
+        $this->courseService->unenrollStudent($id, $student_id);
 
-public function dersOgrenciCikar($id, $student_id)
-{
-    $this->courseService->unenrollStudent($id, $student_id);
-
-    return redirect()->back()->with('success', 'Öğrenci dersten başarıyla çıkarıldı!');
-}
-
-public function dersOgrenciCikarToplu(Request $request, $id)
-{
-    $request->validate([
-        'student_ids'   => 'required|array',
-        'student_ids.*' => 'exists:students,id',
-    ]);
-
-    foreach ($request->student_ids as $studentId) {
-        $this->courseService->unenrollStudent($id, $studentId);
+        return redirect()->back()
+                         ->with('success', CourseMessages::STUDENT_REMOVED->value);
     }
 
-    return redirect()->back()->with('success', count($request->student_ids) . ' öğrenci dersten çıkarıldı!');
-}
+    public function dersOgrenciCikarToplu(Request $request, $id)
+    {
+        $request->validate([
+            'student_ids'   => 'required|array',
+            'student_ids.*' => 'exists:students,id',
+        ]);
+
+        foreach ($request->student_ids as $studentId) {
+            $this->courseService->unenrollStudent($id, $studentId);
+        }
+
+        return redirect()->back()
+                         ->with('success', count($request->student_ids) . ' ' . CourseMessages::STUDENT_UNENROLLED->value);
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Repositories\Interfaces\CourseRepositoryInterface;
+use App\Enums\Messages\UserMessages;
 
 class UserController extends Controller
 {
@@ -50,6 +51,6 @@ class UserController extends Controller
 
     $user->save();
 
-    return redirect()->route('user.profile')->with('success', 'Profil bilgileriniz başarıyla güncellendi!');
+    return redirect()->route('user.profile')->with('success', UserMessages::PROFILE_UPDATED->value);
 }
 }

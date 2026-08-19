@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Enums\Messages\UserMessages;
 
 class AuthController extends Controller
 {
@@ -38,9 +39,9 @@ class AuthController extends Controller
             return redirect()->intended(route('user.dashboard'));
         }
 
-        return back()->withErrors([
-            'email' => 'Girdiğiniz e-posta veya şifre hatalı.',
-        ])->onlyInput('email');
+        return back()
+            ->withInput($request->only('email'))
+            ->with('error', UserMessages::LOGIN_FAILED->value);
     }
 
     public function logout(Request $request)
@@ -66,6 +67,6 @@ class AuthController extends Controller
     $user->password = Hash::make($request->password);
     $user->save();
 
-    return back()->with('success', 'Şifreniz başarıyla güncellendi! Yeni şifrenizle giriş yapabilirsiniz.');
+    return back()->with('success', UserMessages::PASSWORD_UPDATED->value);
 }
 }

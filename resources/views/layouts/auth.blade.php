@@ -10,6 +10,7 @@
 </head>
 <body>
     <div id="auth">
+        @include('layouts.partials.alerts')
         @yield('content')
     </div>
 </body>

@@ -32,7 +32,7 @@
 
             <div class="card-body">
 
-                <form action="{{ route('ders.notlari.kaydet') }}" method="POST">
+                <form action="{{ route('user.ders.notlari.kaydet') }}" method="POST">
                     @csrf
                     <input type="hidden" name="course_id" value="{{ $course->id }}">
 
