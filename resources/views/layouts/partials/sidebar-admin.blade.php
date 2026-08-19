@@ -38,7 +38,7 @@
     <li class="ktun-menu-item {{ request()->routeIs('admin.login.history') ? 'active' : '' }}">
         <a href="{{ route('admin.login.history') }}" class='sidebar-link'>
             <i class="bi bi-clock-history"></i>
-            <span>Giriş Geçmişi</span>
+            <span>Oturum Geçmişi</span>
         </a>
     </li>
 

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Repositories\Interfaces\StudentRepositoryInterface;
 use App\Services\StudentService;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\StudentsImport;
 
 class StudentController extends Controller
 {
@@ -55,7 +57,53 @@ class StudentController extends Controller
 
     public function destroy($id)
     {
+        $student = $this->studentRepository->find($id);
+
+        activity()
+            ->performedOn($student)
+            ->withProperties(['name' => $student->name, 'student_no' => $student->student_no])
+            ->log('Öğrenci silindi');
+
         $this->studentRepository->delete($id);
+
         return redirect()->route('admin.students.index')->with('success', 'Öğrenci sistemden silindi!');
     }
+
+    public function importExcel(Request $request)
+{
+    $request->validate([
+        'excel_file' => 'required|mimes:xlsx,xls,csv|max:2048',
+    ], [
+        'excel_file.required' => 'Lütfen bir dosya seçin.',
+        'excel_file.mimes'    => 'Sadece .xlsx, .xls veya .csv dosyası yükleyebilirsiniz.',
+        'excel_file.max'      => 'Dosya boyutu en fazla 2MB olabilir.',
+    ]);
+
+    $import = new StudentsImport;
+    Excel::import($import, $request->file('excel_file'));
+
+    $failures = $import->failures();
+    $errors   = $import->errors();
+
+    // Eğer validasyon hatası veya duplicate (unique) takılan satır varsa
+    if ($failures->isNotEmpty() || count($errors) > 0) {
+        $hatalar = [];
+
+        foreach ($failures as $failure) {
+            // Örn: "Satır 4: Bu öğrenci numarası zaten sistemde kayıtlı."
+            $hatalar[] = "Satır {$failure->row()}: " . implode(', ', $failure->errors());
+        }
+
+        foreach ($errors as $error) {
+            $hatalar[] = $error->getMessage();
+        }
+
+        return redirect()->back()
+            ->with('import_errors', $hatalar);
+    }
+
+    $msg = $import->getImportedCount() . ' öğrenci başarıyla eklendi.';
+
+    return redirect()->route('admin.students.index')->with('success', $msg);
+}
 }

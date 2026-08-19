@@ -42,6 +42,7 @@ Route::middleware(['auth', 'super.admin'])->prefix('admin')->name('admin.')->gro
 
     // Öğrenci Yönetimi
     Route::get('/students', [StudentController::class, 'index'])->name('students.index');
+     Route::post('/students/import', [StudentController::class, 'importExcel'])->name('students.import');
     Route::post('/students', [StudentController::class, 'store'])->name('students.store');
     Route::get('/students/{id}/edit', [StudentController::class, 'edit'])->name('students.edit');
     Route::put('/students/{id}', [StudentController::class, 'update'])->name('students.update');
