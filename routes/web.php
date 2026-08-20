@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DersController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\AssignmentController;
 use Illuminate\Support\Facades\Route;
 
 // Ana sayfa
@@ -53,6 +54,7 @@ Route::middleware(['auth', 'super.admin'])->prefix('admin')->name('admin.')->gro
     Route::post('/courses/{id}/ogrenci-ekle', [AdminController::class, 'dersOgrenciEkle'])->name('courses.ogrenci.ekle');
     Route::delete('/courses/{id}/ogrenci-cikar/{student_id}', [AdminController::class, 'dersOgrenciCikar'])->name('courses.ogrenci.cikar');
     Route::delete('/courses/{id}/ogrenci-cikar-toplu', [AdminController::class, 'dersOgrenciCikarToplu'])->name('courses.ogrenci.cikar.toplu');
+    Route::post('/courses/remove-teacher', [AdminController::class, 'removeTeacher'])->name('courses.remove');
 
     // Dersler (user panelindeki gibi - tüm dersler görünür)
     Route::get('/dersler', [DersController::class, 'adminIndex'])->name('dersler');
@@ -60,6 +62,11 @@ Route::middleware(['auth', 'super.admin'])->prefix('admin')->name('admin.')->gro
     Route::get('/dersler/{ders_id}/form/{form_id}', [DersController::class, 'formGoster'])->name('form.goster');
     Route::get('/dersler/{id}/notlari/duzenle', [DersController::class, 'notlariDuzenle'])->name('ders.notlari.duzenle');
     Route::post('/dersler/notlari/kaydet', [DersController::class, 'notlariKaydet'])->name('ders.notlari.kaydet');
+
+    Route::post('/dersler/{course_id}/odevler', [AssignmentController::class, 'store'])->name('dersler.odevler.store');
+    Route::delete('/odevler/{id}', [AssignmentController::class, 'destroy'])->name('dersler.odevler.destroy');
+    Route::get('/dersler/{ders_id}/odevler/{odev_id}/teslimler', [AssignmentController::class, 'teslimler'])->name('dersler.odevler.teslimler');
+    Route::post('/dersler/{ders_id}/odevler/{odev_id}/teslimler', [AssignmentController::class, 'teslimKaydet'])->name('dersler.odevler.teslimler.kaydet');
     
 });
 
@@ -77,4 +84,10 @@ Route::prefix('user')->middleware(['auth'])->name('user.')->group(function () {
     Route::get('/dersler/{id}/notlari/duzenle', [DersController::class, 'notlariDuzenle'])->name('ders.notlari.duzenle');
     Route::post('/dersler/notlari/kaydet', [DersController::class, 'notlariKaydet'])->name('ders.notlari.kaydet');
     Route::post('/dersler/katki/kaydet', [DersController::class, 'katkilariniKaydet'])->name('ders.katki.kaydet');
+
+    // Ödevler
+    Route::post('/dersler/{course_id}/odevler', [AssignmentController::class, 'store'])->name('dersler.odevler.store');
+    Route::delete('/odevler/{id}', [AssignmentController::class, 'destroy'])->name('dersler.odevler.destroy');
+    Route::get('/dersler/{ders_id}/odevler/{odev_id}/teslimler', [AssignmentController::class, 'teslimler'])->name('dersler.odevler.teslimler');
+    Route::post('/dersler/{ders_id}/odevler/{odev_id}/teslimler', [AssignmentController::class, 'teslimKaydet'])->name('dersler.odevler.teslimler.kaydet');
 });

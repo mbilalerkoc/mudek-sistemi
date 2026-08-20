@@ -10,15 +10,23 @@ class Assignment extends Model
 {
     use LogsActivity;
 
-    protected $fillable = ['course_id', 'title', 'description', 'due_date'];
+    protected $fillable = ['course_id', 'title', 'description', 'due_date', 'max_score', 'file_path'];
 
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['course_id', 'title', 'description', 'due_date'])
+            ->logOnly([
+                'title',
+                'description',
+                'max_score',
+                'due_date',
+                'course_id'
+            ])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs()
-            ->setDescriptionForEvent(fn(string $eventName) => "Ödev {$eventName}");
+            ->setDescriptionForEvent(
+                fn(string $eventName) => "Odev {$eventName}"
+            );
     }
 
     public function course()

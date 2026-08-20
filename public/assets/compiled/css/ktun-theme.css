@@ -8,6 +8,9 @@
     --ktun-primary-light:         #1abc9c;
     --ktun-primary-dark:          rgba(0, 172, 193, .25);
     --ktun-secondary-light:       #ffffff;
+    --ktun-secondary-dark:        #b6b6b6;
+    --ktun-secondary-gray:        #c6c6c6;
+    --ktun-secondary-gray-hover:  #dde2e6;
     --ktun-btn-text:              #ffffff;
     --ktun-btn-secondary-text:    #000000;
     --ktun-btn-shadow:            0 4px 10px rgba(26, 188, 156, 0.5);
@@ -20,6 +23,14 @@
     --ktun-sidebar-text:          #444444;
     --ktun-sidebar-title:         #888888;
     --ktun-auth-btn:              #f1556c;
+    --ktun-danger:                #f1556c;
+    --ktun-danger-dark:           #b71c1c;
+    --ktun-btn-danger-shadow:     0 4px 10px rgba(183, 28, 28, 0.3);
+
+    /* YENİ: Tablo ve Soft Etiket (Badge) Renkleri */
+    --ktun-soft-bg:               #d7ece8;
+    --ktun-soft-text:             #47515b;
+    --ktun-soft-border:           #c9ded9;
 
     /* Yazı renkleri */
     --ktun-card-title:            #1e293b;
@@ -46,7 +57,46 @@ body {
     flex-direction: column;
     min-height: 100vh;
 }
+/* ================================================
+   ÖZEL ARKA PLANLAR VE BADGE (ETİKET) STİLLERİ
+================================================ */
+.bg-ktun-soft {
+    background-color: var(--ktun-soft-bg) !important;
+    color: var(--ktun-soft-text) !important;
+    border: 1px solid var(--ktun-soft-border) !important;
+    font-weight: 600;
+}
+/* ================================================
+   TIKLANABİLİR YAZILAR (Özel Link Stilleri)
+================================================ */
+.ktun-text-link {
+    color: var(--ktun-primary);
+    text-decoration: none !important;
+    font-weight: 600;
+    transition: color 0.2s ease-in-out;
+    position: relative;
+    display: inline-block;
+}
 
+.ktun-text-link:hover {
+    color: var(--ktun-primary-light);
+}
+
+/* Üzerine gelince altından kayarak çıkan zarif çizgi animasyonu */
+.ktun-text-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 1.5px;
+    bottom: -2px;
+    left: 0;
+    background-color: var(--ktun-primary-light);
+    transition: width 0.3s ease;
+}
+
+.ktun-text-link:hover::after {
+    width: 100%;
+}
 /* ================================================
    NAVBAR
 ================================================ */
@@ -293,10 +343,10 @@ body {
    TABLO
 ================================================ */
 .table thead th {
-    background: #d7ece8 !important;
-    color: #47515b;
+    background: var(--ktun-soft-bg) !important;
+    color: var(--ktun-soft-text);
     font-weight: 600;
-    border-color: #c9ded9;
+    border-color: var(--ktun-soft-border);
     font-size: 0.85rem;
 }
 
@@ -327,11 +377,52 @@ body {
     box-shadow: var(--ktun-btn-shadow) !important;
 }
 
-.btn-outline-secondary {
-    background: var(--ktun-secondary-light) !important;
-    border-color: var(--ktun-primary-light) !important;
-    color: var(--ktun-btn-secondary-text) !important;
+/* İptal vb. için açık gri standart */
+.btn-outline-secondary,
+.btn-light,
+.btn-secondary {
+    background-color: var(--ktun-secondary-gray) !important;
+    border-color: #d1d6db !important;
+    color: var(--ktun-text) !important; 
+    box-shadow: none !important;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-outline-secondary:hover,
+.btn-light:hover,
+.btn-secondary:hover {
+    background-color: var(--ktun-secondary-gray-hover) !important;
+    border-color: #c0c6cc !important;
+    color: var(--ktun-text) !important;
+}
+
+/* İndir / Mevcut Dosya Butonu (Turkuaz Temalı Outline) */
+.btn-outline-primary {
+    color: var(--ktun-primary) !important;
+    border-color: var(--ktun-primary) !important;
+    background-color: transparent !important;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-outline-primary:hover {
+    color: var(--ktun-btn-text) !important;
+    background-color: var(--ktun-primary) !important;
     box-shadow: var(--ktun-btn-shadow) !important;
+}
+
+.btn-outline-danger { /*silme butonu*/
+    color: var(--ktun-danger) !important; 
+    border-color: var(--ktun-danger) !important;
+    background-color: transparent !important;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-outline-danger:hover {
+    color: var(--ktun-btn-text) !important; 
+    background-color: var(--ktun-danger-dark) !important;
+    border-color: var(--ktun-danger-dark) !important;
+    box-shadow: var(--ktun-btn-danger-shadow) !important;
 }
 
 a { color: var(--ktun-primary); }

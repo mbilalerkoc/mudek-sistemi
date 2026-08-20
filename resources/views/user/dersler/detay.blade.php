@@ -9,6 +9,7 @@
     $dashboardRoute = $isAdmin ? 'admin.dashboard' : 'user.dashboard';
     $derslerRoute   = $isAdmin ? 'admin.dersler'   : 'user.dersler';
     $formRoute      = $isAdmin ? 'admin.form.goster' : 'user.form.goster';
+    $odevRoute      = $isAdmin ? 'admin.dersler.odevler.index' : 'user.dersler.odevler.index';
 @endphp
 
     <div class="page-heading">

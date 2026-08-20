@@ -107,7 +107,7 @@
     <script src="{{ asset('assets/compiled/js/app.js') }}"></script>
 
     <script src="{{ asset('assets/js/custom/sidebar-toggle.js') }}"></script>
-
+    <script src="{{ asset('assets/js/custom/file-size-check.js') }}"></script>
     @stack('scripts')
 
 </body>

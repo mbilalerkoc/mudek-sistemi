@@ -32,9 +32,9 @@
         @if($form_id == 1)
             @include('user.dersler.forms.notlar')
         @elseif($form_id == 2)
-            @include('user.dersler.forms.odevler')
-        @elseif($form_id == 3)
             @include('user.dersler.forms.sinav-kagitlari')
+        @elseif($form_id == 3)
+            @include('user.dersler.forms.odevler')
         @elseif($form_id == 4)
             @include('user.dersler.forms.ogrenci-kagitlari')
         @endif

@@ -9,7 +9,7 @@ class AssignmentSubmission extends Model
 {
     use LogsActivity;
 
-    protected $fillable = ['assignment_id', 'student_id', 'file_path', 'grade'];
+    protected $fillable = ['assignment_id', 'student_id', 'file_path', 'grade_score'];
 
     public function getActivitylogOptions(): LogOptions
     {

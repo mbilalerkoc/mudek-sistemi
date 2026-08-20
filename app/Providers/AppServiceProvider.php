@@ -6,16 +6,26 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Event; 
 use Illuminate\Auth\Events\Login;
+use Illuminate\Auth\Events\Logout;
 use App\Models\Course;
 use App\Observers\CourseObserver;
 use App\Listeners\LogSuccessfulLogin; 
+use App\Listeners\LogSuccessfulLogout;
 
 class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
-    {
-        
-    }
+{
+    $this->app->bind(
+        \App\Repositories\Interfaces\AssignmentRepositoryInterface::class,
+        \App\Repositories\AssignmentRepository::class
+    );
+
+    $this->app->bind(
+        \App\Repositories\Interfaces\AssignmentSubmissionRepositoryInterface::class,
+        \App\Repositories\AssignmentSubmissionRepository::class
+    );
+}
 
     public function boot(): void
     {
@@ -24,10 +34,5 @@ class AppServiceProvider extends ServiceProvider
 
         Event::listen(Login::class, LogSuccessfulLogin::class);
         Event::listen(Logout::class, LogSuccessfulLogout::class);
-
-        Event::listen(
-            Logout::class,
-            LogSuccessfulLogout::class
-        );
     }
 }

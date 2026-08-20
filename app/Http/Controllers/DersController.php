@@ -7,13 +7,15 @@ use App\Repositories\Interfaces\CourseRepositoryInterface;
 use App\Services\GradeService;
 use App\Enums\Messages\ExamMessages;
 use App\Enums\Messages\FormMessages;
+use App\Repositories\Interfaces\AssignmentRepositoryInterface;
 
 class DersController extends Controller
 {
     public function __construct(
-        private CourseRepositoryInterface $courseRepository,
-        private GradeService $gradeService
-    ) {}
+    private CourseRepositoryInterface $courseRepository,
+    private GradeService $gradeService,
+    private AssignmentRepositoryInterface $assignmentRepository
+) {}
 
     // User paneli - sadece kendi dersleri
     public function index()
@@ -51,14 +53,23 @@ class DersController extends Controller
     $exams    = $data['exams'];
     $students = $data['students'];
 
+    $assignments = $this->assignmentRepository->getByCourse($ders_id);
+
     $isAdmin        = auth()->user()->role === 'super_admin';
     $dashboardRoute = $isAdmin ? 'admin.dashboard' : 'user.dashboard';
-    $derslerRoute   = $isAdmin ? 'admin.dersler'   : 'user.dersler';
+    $derslerRoute   = $isAdmin ? 'admin.dersler' : 'user.dersler';
     $detayRoute     = $isAdmin ? 'admin.ders.detay' : 'user.ders.detay';
 
     return view('user.dersler.forms.index', compact(
-        'course', 'form_id', 'exams', 'students',
-        'isAdmin', 'dashboardRoute', 'derslerRoute', 'detayRoute'
+        'course',
+        'form_id',
+        'exams',
+        'students',
+        'assignments',
+        'isAdmin',
+        'dashboardRoute',
+        'derslerRoute',
+        'detayRoute'
     ));
 }
 

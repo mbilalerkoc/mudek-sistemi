@@ -14,18 +14,30 @@ class AssignmentSubmissionRepository extends BaseRepository implements Assignmen
 
     public function getByAssignment($assignmentId)
     {
-        return $this->model->where('assignment_id', $assignmentId)->get();
+        return $this->model
+            ->where('assignment_id', $assignmentId)
+            ->get();
     }
 
-    public function getByStudent($studentId)
+    public function findByAssignmentAndStudent($assignmentId, $studentId)
     {
-        return $this->model->where('student_id', $studentId)->get();
+        return $this->model
+            ->where('assignment_id', $assignmentId)
+            ->where('student_id', $studentId)
+            ->first();
     }
 
-    public function updateGrade($id, $grade)
+    public function saveSubmission($assignmentId, $studentId, array $data)
     {
-        $record = $this->find($id);
-        $record->update(['grade_score' => $grade]);
-        return $record;
+        return $this->model->updateOrCreate(
+            [
+                'assignment_id' => $assignmentId,
+                'student_id' => $studentId,
+            ],
+            [
+                'grade_score' => $data['grade_score'] ?? null,
+                'file_path' => $data['file_path'] ?? null,
+            ]
+        );
     }
 }

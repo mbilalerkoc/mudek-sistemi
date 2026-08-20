@@ -14,7 +14,9 @@ class AssignmentRepository extends BaseRepository implements AssignmentRepositor
 
     public function getByCourse($courseId)
     {
-        return $this->model->where('course_id', $courseId)->get();
+        return $this->model
+            ->where('course_id', $courseId)
+            ->get();
     }
 
     public function getByExam($examId)
