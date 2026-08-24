@@ -30,7 +30,7 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <span>Dersler</span>
-                        <span class="badge bg-primary">{{ $courses->count() }} ders</span>
+                        <span class="badge bg-ktun-soft">{{ $courses->count() }} ders</span>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
@@ -48,8 +48,8 @@
                                 <tbody>
                                     @forelse ($courses as $course)
                                         <tr>
-                                            <td><span class="badge bg-secondary">{{ $course->code }}</span></td>
-                                            <td>{{ $course->name }}</td>
+                                            <td><span class="badge bg-ktun-soft">{{ $course->code }}</span></td>
+                                            <td class="fw-500">{{ $course->name }}</td>
                                             <td>{{ $course->credits ?? '-' }}</td>
                                             <td>{{ $course->semester ?? '-' }}</td>
                                             <td>
@@ -61,28 +61,31 @@
                                                 @endforelse
                                             </td>
                                             <td class="text-center">
-                                                {{-- Düzenle --}}
-                                                <a href="{{ route('admin.courses.edit', $course->id) }}"
-                                                    class="btn btn-sm btn-warning me-1">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
+                                                <div class="d-flex justify-content-center gap-1">
+                                                    {{-- Öğrenciler --}}
+                                                    <a href="{{ route('admin.courses.ogrenciler', $course->id) }}"
+                                                        class="btn btn-sm btn-outline-primary" title="Öğrenciler">
+                                                        <i class="bi bi-people"></i>
+                                                    </a>
 
-                                                {{-- Sil (Modern Modal Tetikleyici) --}}
-                                                <form action="{{ route('admin.courses.destroy', $course->id) }}"
-                                                    method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="button" class="btn btn-sm btn-danger delete-btn" 
-                                                            data-url="{{ route('admin.courses.destroy', $course->id) }}">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </form>
+                                                    {{-- Düzenle --}}
+                                                    <a href="{{ route('admin.courses.edit', $course->id) }}"
+                                                        class="btn btn-sm btn-outline-primary" title="Düzenle">
+                                                        <i class="bi bi-pencil"></i>
+                                                    </a>
 
-                                                {{-- Öğrenciler --}}
-                                                <a href="{{ route('admin.courses.ogrenciler', $course->id) }}"
-                                                    class="btn btn-sm btn-info me-1">
-                                                    <i class="bi bi-people"></i>
-                                                </a>
+                                                    {{-- Sil (Modern Modal Tetikleyici) --}}
+                                                    <form action="{{ route('admin.courses.destroy', $course->id) }}"
+                                                        method="POST" class="d-inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="button" class="btn btn-sm btn-outline-danger delete-btn"
+                                                                data-url="{{ route('admin.courses.destroy', $course->id) }}"
+                                                                title="Sil">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
                                             </td>
                                         </tr>
                                     @empty
@@ -128,7 +131,7 @@
                                     </select>
                                 </div>
                                 <div class="col-12 col-md-2">
-                                    <button type="submit" class="btn btn-primary w-100">Ata</button>
+                                    <button type="submit" class="btn btn-primary-light w-100">Ata</button>
                                 </div>
                             </div>
                         </form>
@@ -176,7 +179,7 @@
                                     value="{{ old('semester') }}" placeholder="Örn: 2024-2025 Güz">
                             </div>
 
-                            <button type="submit" class="btn btn-primary w-100">
+                            <button type="submit" class="btn btn-primary-light w-100">
                                 <i class="bi bi-plus-circle me-1"></i> Ders Ekle
                             </button>
                         </form>
@@ -191,7 +194,7 @@
     <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true" style="background: rgba(0,0,0,0.5);">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header bg-danger text-white">
+                <div class="modal-header" style="background: var(--ktun-danger); border-bottom: none;">
                     <h5 class="modal-title text-white">Silme Onayı</h5>
                     <button type="button" class="btn-close btn-close-white" id="closeDeleteModalBtn"></button>
                 </div>
@@ -203,7 +206,7 @@
                     <form id="deleteForm" method="POST" class="d-inline">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-danger">Evet</button>
+                        <button type="submit" class="btn" style="background: var(--ktun-danger); color: #fff;">Evet</button>
                     </form>
                 </div>
             </div>
@@ -212,6 +215,5 @@
 @endsection
 
 @push('scripts')
-    {{-- Harici Modüler Silme Scripti Çağrılıyor --}}
     <script src="{{ asset('assets/js/custom/delete-modal.js') }}"></script>
 @endpush

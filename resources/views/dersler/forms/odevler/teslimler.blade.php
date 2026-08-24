@@ -109,14 +109,14 @@
                                                     </div>
                                                 </div>
 
-                                                {{-- 2. ADIM: SİLME ONAYI (Dropdown'dan Sil'e basılınca açılır) --}}
                                                 <div id="file-delete-{{ $student->id }}"
                                                     class="d-none flex-column align-items-center gap-2 text-center w-100">
-                                                    {{-- Tıklanabilir hale getirdiğimiz onay butonu --}}
+
                                                     <button type="button" class="btn btn-sm btn-danger w-100 py-1"
                                                         onclick="confirmDeletion({{ $student->id }})">
                                                         <i class="bi bi-trash me-1"></i> Dosyayı Kaldır
                                                     </button>
+
                                                     <button type="button"
                                                         class="btn btn-sm btn-link text-secondary p-0 text-decoration-none"
                                                         onclick="cancelDeletion({{ $student->id }})">
@@ -124,7 +124,6 @@
                                                     </button>
                                                 </div>
 
-                                                {{-- 3. ADIM: DEĞİŞTİRME VEYA SİLİNDİKTEN SONRAKİ INPUT EKRANI --}}
                                                 <div id="file-input-{{ $student->id }}" class="d-none">
                                                     <input type="file" name="submissions[{{ $student->id }}][file]"
                                                         class="form-control form-control-sm file-size-check"

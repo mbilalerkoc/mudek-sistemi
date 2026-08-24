@@ -54,4 +54,13 @@ class CourseRepository extends BaseRepository implements CourseRepositoryInterfa
     {
         return $this->model->with(['users.academicTitle'])->get();
     }
+    // Bir dersin form/tamamlanma kriterleri için gerekli ilişkili verilerini getirir
+    public function getCourseCompletionData($courseId)
+    {
+        return $this->model->with([
+            'exams.studentExams', 
+            'assignments', 
+            'students.studentCourses'
+        ])->find($courseId);
+    }
 }

@@ -20,8 +20,6 @@ class StudentsImport implements ToModel, WithHeadingRow, SkipsEmptyRows, SkipsOn
 
     public function model(array $row): Student|null
     {
-        // Validation kuralları (unique) zaten var olanları engellediği için
-        // buraya sadece veritabanında olmayan yeni kayıtlar düşer.
 
         $student = new Student([
             'student_no' => (string) $row['student_no'],

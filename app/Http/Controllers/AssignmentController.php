@@ -14,7 +14,7 @@ class AssignmentController extends Controller
     {
         $this->assignmentService = $assignmentService;
     }
-
+    
     /*
     |--------------------------------------------------------------------------
     | ÖDEV OLUŞTUR
@@ -29,24 +29,27 @@ class AssignmentController extends Controller
             'max_score'   => 'required|numeric|min:0|max:100',
             'due_date'    => 'required|date',
             'file'        => 'nullable|file|mimes:pdf,doc,docx,ppt,pptx|max:10240',
+            'exam_id'     => 'nullable|exists:exams,id'
         ]);
 
         $validated['course_id'] = $courseId;
-
-        /*
-        |--------------------------------------------------------------------------
-        | ÖDEV DOSYASI
-        |--------------------------------------------------------------------------
-        */
+        $examId = $validated['exam_id'] ?? null;
+        unset($validated['exam_id']);
 
         if ($request->hasFile('file')) {
             $validated['file_path'] = $this->assignmentService
-            ->uploadAssignmentFile($request->file('file'));
+                ->uploadAssignmentFile($request->file('file'));
         }
 
         unset($validated['file']);
 
-        $this->assignmentService->createAssignment($validated);
+        try {
+            $this->assignmentService->createAssignmentWithExamCheck($validated, $examId);
+        } catch (\InvalidArgumentException $e) {
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['max_score' => $e->getMessage()]);
+        }
 
         $routeName = auth()->user()->role === 'super_admin'
             ? 'admin.form.goster'
@@ -129,7 +132,7 @@ class AssignmentController extends Controller
             : 'user.dersler.odevler.teslimler.kaydet';
 
         return view(
-            'user.dersler.forms.teslimler',
+            'dersler.forms.odevler.teslimler',
             compact(
                 'assignment',
                 'course',
@@ -158,44 +161,19 @@ class AssignmentController extends Controller
 
         foreach ($request->submissions as $studentId => $data) {
 
-            /*
-            |--------------------------------------------------------------------------
-            | Mevcut submission
-            |--------------------------------------------------------------------------
-            */
-
             $submission = $this->assignmentService
                 ->getSubmission(
                     $odevId,
                     $studentId
                 );
-
-            /*
-            |--------------------------------------------------------------------------
-            | Mevcut dosya yolu
-            |--------------------------------------------------------------------------
-            */
-
             $filePath = $submission
                 ? $submission->file_path
                 : null;
-
-            /*
-            |--------------------------------------------------------------------------
-            | PUAN
-            |--------------------------------------------------------------------------
-            */
 
             $gradeScore = isset($data['grade_score'])
                 && $data['grade_score'] !== ''
                 ? $data['grade_score']
                 : null;
-
-            /*
-            |--------------------------------------------------------------------------
-            | DOSYA SİL
-            |--------------------------------------------------------------------------
-            */
 
             if (
                 isset($data['delete_file']) &&
@@ -209,12 +187,6 @@ class AssignmentController extends Controller
 
                 $filePath = null;
             }
-
-            /*
-            |--------------------------------------------------------------------------
-            | YENİ DOSYA
-            |--------------------------------------------------------------------------
-            */
 
             if (
                 isset($data['file']) &&
@@ -240,12 +212,6 @@ class AssignmentController extends Controller
                     );
             }
 
-            /*
-            |--------------------------------------------------------------------------
-            | SERVICE
-            |--------------------------------------------------------------------------
-            */
-
             $this->assignmentService->saveSubmission(
                 $odevId,
                 $studentId,
@@ -255,12 +221,6 @@ class AssignmentController extends Controller
                 ]
             );
         }
-
-        /*
-        |--------------------------------------------------------------------------
-        | REDIRECT
-        |--------------------------------------------------------------------------
-        */
 
         $isAdmin = auth()->user()->role === 'super_admin';
 

@@ -1,4 +1,4 @@
-@php
+"@php
     $isAdmin = auth()->user()->role === 'super_admin';
     $storeRoute = $isAdmin ? 'admin.dersler.odevler.store' : 'user.dersler.odevler.store';
     $destroyRoute = $isAdmin ? 'admin.dersler.odevler.destroy' : 'user.dersler.odevler.destroy';
@@ -32,6 +32,17 @@
                             max="100" required>
                     </div>
                     <div class="col-12 col-md-3">
+                        <label class="form-label fw-bold">Etki Edeceği Sınav</label>
+                        <select name="exam_id" class="form-select">
+                            <option value="">Bağımsız Ödev (Sınava Etki Etmez)</option>
+                            @foreach ($exams as $exam)
+                                <option value="{{ $exam->id }}">
+                                    {{ ucfirst($exam->exam_type) }} Sınavı
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-3">
                         <label class="form-label fw-bold">Son Teslim Tarihi <span class="text-danger">*</span></label>
                         <input type="datetime-local" name="due_date" class="form-control" required>
                     </div>
@@ -53,7 +64,7 @@
                             data-bs-target="#odevEkleForm">
                             İptal
                         </button>
-                        <button type="submit" class="btn btn-primary px-4">
+                        <button type="submit" class="btn btn-primary-light px-4">
                             <i class="bi bi-check-lg me-1"></i> Oluştur
                         </button>
                     </div>
@@ -67,10 +78,8 @@
 @forelse ($assignments as $assignment)
     <div class="card shadow-sm mb-3">
 
-        {{-- 1. ADIM: card-header div'inden 'data-bs-toggle' ve 'cursor' özelliklerini SİLDİK --}}
         <div class="card-header d-flex justify-content-between align-items-center">
 
-            {{-- 2. ADIM: Akordeonu açma özelliğini sadece SOL TARAFTAKİ metin kutusuna verdik --}}
             <div class="d-flex align-items-center gap-3 flex-grow-1" style="cursor: pointer;" data-bs-toggle="collapse"
                 data-bs-target="#odev{{ $assignment->id }}">
                 <i class="bi bi-journal-text text-primary fs-5"></i>
@@ -82,6 +91,25 @@
                         Son teslim: {{ \Carbon\Carbon::parse($assignment->due_date)->format('d.m.Y H:i') }}
                         &nbsp;·&nbsp;
                         Maks. puan: {{ $assignment->max_score }}
+
+                        @if ($assignment->examAssignments && $assignment->examAssignments->isNotEmpty())
+                            @php
+                                $exam = $assignment->examAssignments->first()->exam;
+                            @endphp
+
+                            @if ($exam)
+                                &nbsp;·&nbsp;
+                                <span class="badge bg-info text-dark">
+                                    {{ ucfirst($exam->exam_type) }} Sınavı
+                                </span>
+                            @else
+                                &nbsp;·&nbsp;
+                                <span class="badge bg-secondary">Bağımsız Ödev</span>
+                            @endif
+                        @else
+                            &nbsp;·&nbsp;
+                            <span class="badge bg-secondary">Bağımsız Ödev</span>
+                        @endif
                     </small>
                 </div>
             </div>
@@ -93,19 +121,16 @@
                         : 'user.dersler.odevler.teslimler';
             @endphp
 
-            {{-- 3. ADIM: SAĞ TARAF - Buraya tıklayınca akordeon açılmayacak, sadece buton çalışacak --}}
             <div class="d-flex align-items-center gap-2">
                 <span class="badge bg-ktun-soft px-3 py-2">
                     {{ $assignment->submissions->count() }} teslim
                 </span>
 
-                {{-- Artık JS (stopPropagation vs.) olmadan temiz bir link kullanabiliriz --}}
                 <a href="{{ route($teslimRoute, ['ders_id' => $course->id, 'odev_id' => $assignment->id]) }}"
                     class="btn btn-primary-light">
                     <i class="bi bi-pencil-square me-1"></i> Teslim Gir
                 </a>
 
-                {{-- Sağdaki ok ikonuna da basınca akordeon açılsın diye özelliği sadece oka da verdik --}}
                 <i class="bi bi-chevron-down text-muted ms-1" style="cursor: pointer;" data-bs-toggle="collapse"
                     data-bs-target="#odev{{ $assignment->id }}"></i>
             </div>

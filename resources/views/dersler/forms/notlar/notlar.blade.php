@@ -2,9 +2,9 @@
     $isAdmin      = auth()->user()->role === 'super_admin';
     $duzenleRoute = $isAdmin ? 'admin.ders.notlari.duzenle' : 'user.ders.notlari.duzenle';
 
-    $vize       = $exams->first(fn($exam) => strtolower(trim($exam->exam_type)) === 'midterm');
-    $final      = $exams->first(fn($exam) => strtolower(trim($exam->exam_type)) === 'final');
-    $butunleme  = $exams->first(fn($exam) => strtolower(trim($exam->exam_type)) === 'makeup');
+    $vize         = $exams->first(fn($exam) => strtolower(trim($exam->exam_type)) === 'midterm');
+    $final        = $exams->first(fn($exam) => strtolower(trim($exam->exam_type)) === 'final');
+    $butunleme    = $exams->first(fn($exam) => strtolower(trim($exam->exam_type)) === 'makeup');
     $gradeService = app(\App\Services\GradeService::class);
 @endphp
 
@@ -13,10 +13,12 @@
     <div class="card-header bg-white border-bottom py-3 d-flex justify-content-between align-items-center">
         <h4 class="card-title mb-0 text-primary">{{ $course->name }} - Öğrenci Notları</h4>
 
-        <a href="{{ route($duzenleRoute, $course->id) }}" class="btn btn-warning px-4">
-            <i class="bi bi-pencil-square me-1"></i>
-            Notları Güncelle
-        </a>
+        @if(auth()->user()->role === 'super_admin')
+            <a href="{{ route('admin.ders.notlari.duzenle', $course->id) }}" class="btn btn-warning px-4 shadow-sm">
+                <i class="bi bi-pencil-square me-1"></i>
+                Toplu Not Güncelle (Admin)
+            </a>
+        @endif
     </div>
 
     <div class="card-body">
@@ -38,11 +40,17 @@
                     @forelse($students as $student)
                         @php
                             $studentCourse        = $student->studentCourses->where('course_id', $course->id)->first();
-                            $ortalama             = $studentCourse->average ?? 0;
-                            $harfNotu             = $studentCourse && $studentCourse->average !== null
-                                                    ? $gradeService->harfNotuHesapla($studentCourse->average)
+                            
+                            // Ortalama boş (null) ise '-' yazdırıyoruz
+                            $ortalamaVal          = $studentCourse->average ?? null;
+                            $ortalamaDisplay      = $ortalamaVal !== null ? number_format($ortalamaVal, 2) : '-';
+                            
+                            $harfNotu             = $ortalamaVal !== null
+                                                    ? $gradeService->harfNotuHesapla($ortalamaVal)
                                                     : '-';
-                            $durum                = $studentCourse->status ?? '-';
+                            
+                            $durum                = $studentCourse->status ?? null;
+                            
                             $studentExams         = $student->studentExams;
                             $vizeStudentExam      = $vize      ? $studentExams->where('exam_id', $vize->id)->first()      : null;
                             $finalStudentExam     = $final     ? $studentExams->where('exam_id', $final->id)->first()     : null;
@@ -54,7 +62,7 @@
 
                             <td>
                                 @if($vize)
-                                    {{ $vizeStudentExam->exam_score ?? '-' }}
+                                    {{ $vizeStudentExam->total_score ?? '-' }}
                                 @else
                                     <span class="text-muted">Sınav yok</span>
                                 @endif
@@ -62,7 +70,7 @@
 
                             <td>
                                 @if($final)
-                                    {{ $finalStudentExam->exam_score ?? '-' }}
+                                    {{ $finalStudentExam->total_score ?? '-' }}
                                 @else
                                     <span class="text-muted">Sınav yok</span>
                                 @endif
@@ -70,13 +78,13 @@
 
                             <td>
                                 @if($butunleme)
-                                    {{ $butunlemeStudentExam->exam_score ?? '-' }}
+                                    {{ $butunlemeStudentExam->total_score ?? '-' }}
                                 @else
                                     <span class="text-muted">Sınav yok</span>
                                 @endif
                             </td>
 
-                            <td class="fw-bold text-primary">{{ number_format($ortalama, 2) }}</td>
+                            <td class="fw-bold text-primary">{{ $ortalamaDisplay }}</td>
                             <td><span class="badge bg-secondary px-2 py-1">{{ $harfNotu }}</span></td>
                             <td>
                                 @if($durum === 'passed')

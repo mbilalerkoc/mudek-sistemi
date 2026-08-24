@@ -29,4 +29,8 @@ class StudentExam extends Model
     public function student(): BelongsTo { return $this->belongsTo(Student::class, 'student_id'); }
     public function exam(): BelongsTo { return $this->belongsTo(Exam::class, 'exam_id'); }
     public function studentCourse(): BelongsTo { return $this->belongsTo(StudentCourse::class, 'student_course_id'); }
+
+    public function answers() {
+        return $this->hasMany(Answer::class);
+    }
 }

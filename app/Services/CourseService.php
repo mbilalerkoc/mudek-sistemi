@@ -92,4 +92,62 @@ class CourseService
 
         return $this->studentCourseRepository->unenroll($studentId, $courseId);
     }
+
+    public function getCourseWithCompletionStatus($courseId)
+{
+    $course = $this->courseRepository->getCourseCompletionData($courseId);
+
+    if (!$course) {
+        return null;
+    }
+
+    $totalForms = 3;
+    $completedForms = 0;
+
+    // 1. Sınav formu
+    if ($course->exams && $course->exams->isNotEmpty()) {
+        $completedForms++;
+    }
+
+    // 2. Ödev formu
+    if ($course->assignments && $course->assignments->isNotEmpty()) {
+        $completedForms++;
+    }
+
+    // 3. Öğrenci formu
+    if ($course->students && $course->students->isNotEmpty()) {
+        $completedForms++;
+    }
+
+    $percentage = round(($completedForms / $totalForms) * 100);
+
+    $course->toplam_form = $totalForms;
+    $course->doldurulan_form = $completedForms;
+    $course->yuzde = $percentage;
+
+    return $course;
+}
+
+   public function getAllCoursesWithCompletionStatus($user)
+{
+    $courses = $user->role === 'super_admin'
+        ? $this->courseRepository->allWithUsers()
+        : $this->courseRepository->getCoursesByTeacher($user);
+
+    foreach ($courses as $course) {
+        $completedCourse = $this->getCourseWithCompletionStatus($course->id);
+
+        if ($completedCourse) {
+            $course->toplam_form = $completedCourse->toplam_form;
+            $course->doldurulan_form = $completedCourse->doldurulan_form;
+            $course->yuzde = $completedCourse->yuzde;
+        } else {
+            $course->toplam_form = 0;
+            $course->doldurulan_form = 0;
+            $course->yuzde = 0;
+        }
+    }
+
+    return $courses;
+}
 }

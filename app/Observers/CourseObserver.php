@@ -10,14 +10,14 @@ class CourseObserver
      * Handle the Course "created" event.
      */
     public function created(Course $course): void
-    {
-        foreach (['midterm', 'final', 'makeup'] as $type) {
-            Exam::firstOrCreate([
-                'course_id' => $course->id,
-                'exam_type' => $type,
-            ]);
-        }
+{
+    foreach (['midterm', 'final'] as $type) {
+        Exam::firstOrCreate([
+            'course_id' => $course->id,
+            'exam_type' => $type,
+        ]);
     }
+}
 
     /**
      * Handle the Course "updated" event.

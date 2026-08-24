@@ -60,9 +60,9 @@
                                         {{ $course->doldurulan_form ?? 0 }} tanesi tamamlandı
                                     </div>
                                     <div class="progress mb-2"
-                                        style="height: 6px; border-radius: 10px; background-color: #e9ecef;">
+                                        style="height: 6px; border-radius: 10px; background-color: var(--ktun-border, #e9ecef);">
                                         <div class="progress-bar" role="progressbar"
-                                            style="width: {{ $course->yuzde ?? 0 }}%; background-color: #28a745; border-radius: 10px;">
+                                            style="width: {{ $course->yuzde ?? 0 }}%; background-color: var(--ktun-primary-light); border-radius: 10px; transition: width 0.6s ease;">
                                         </div>
                                     </div>
                                     <div class="fw-bold" style="font-size: 1rem; color: #1e293b;">

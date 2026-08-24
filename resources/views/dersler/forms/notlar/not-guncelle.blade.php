@@ -32,7 +32,7 @@
 
             <div class="card-body">
 
-                <form action="{{ route('user.ders.notlari.kaydet') }}" method="POST">
+                <form action="{{ route('admin.ders.notlari.kaydet') }}" method="POST">
                     @csrf
                     <input type="hidden" name="course_id" value="{{ $course->id }}">
 
@@ -65,10 +65,11 @@
                                         <td class="fw-bold">{{ $student->student_no }}</td>
                                         <td class="text-start">{{ $student->name }} {{ $student->surname }}</td>
 
+                                        {{-- DÜZELTME: exam_score yerine total_score gösteriliyor --}}
                                         <td>
                                             @if($vize)
                                                 <input type="number" name="grades[midterm][{{ $student->id }}]"
-                                                       value="{{ $vizeStudentExam->exam_score ?? '' }}"
+                                                       value="{{ $vizeStudentExam->total_score ?? '' }}"
                                                        min="0" max="100" step="0.01"
                                                        class="form-control form-control-sm text-center" placeholder="Not">
                                             @else
@@ -79,7 +80,7 @@
                                         <td>
                                             @if($final)
                                                 <input type="number" name="grades[final][{{ $student->id }}]"
-                                                       value="{{ $finalStudentExam->exam_score ?? '' }}"
+                                                       value="{{ $finalStudentExam->total_score ?? '' }}"
                                                        min="0" max="100" step="0.01"
                                                        class="form-control form-control-sm text-center" placeholder="Not">
                                             @else
@@ -90,7 +91,7 @@
                                         <td>
                                             @if($butunleme)
                                                 <input type="number" name="grades[makeup][{{ $student->id }}]"
-                                                       value="{{ $butunlemeStudentExam->exam_score ?? '' }}"
+                                                       value="{{ $butunlemeStudentExam->total_score ?? '' }}"
                                                        min="0" max="100" step="0.01"
                                                        class="form-control form-control-sm text-center" placeholder="Not">
                                             @else
@@ -103,7 +104,7 @@
                         </table>
                     </div>
                     <div class="mt-4 text-end">
-                        <a href="{{ route('user.form.goster', ['ders_id' => $course->id, 'form_id' => 1]) }}" class="btn btn-secondary px-4 me-2">İptal</a>x
+                        <a href="{{ route('user.form.goster', ['ders_id' => $course->id, 'form_id' => 1]) }}" class="btn btn-secondary px-4 me-2">İptal</a>
                         <button type="submit" class="btn btn-primary px-5 py-2 fw-bold">
                             <i class="bi bi-check-lg me-1"></i>
                             Notları Kaydet

@@ -21,6 +21,20 @@ class Exam extends Model
             ->setDescriptionForEvent(fn(string $eventName) => "Sınav {$eventName}");
     }
 
-    public function course() { return $this->belongsTo(Course::class, 'course_id'); }
-    public function studentExams() { return $this->hasMany(StudentExam::class, 'exam_id'); }
+    public function course() {
+        return $this->belongsTo(Course::class);
+    }
+
+    public function questions() {
+        return $this->hasMany(Question::class);
+    }
+    
+    public function studentExams() {
+        return $this->hasMany(StudentExam::class);
+    }
+    public function examAssignments()
+    {
+        return $this->hasMany(ExamAssignment::class);
+    }
+
 }

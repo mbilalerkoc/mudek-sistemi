@@ -13,23 +13,27 @@ use App\Services\CourseService;
 use App\Services\UserService;
 use App\Repositories\Interfaces\StudentCourseRepositoryInterface;
 use App\Repositories\Interfaces\StudentRepositoryInterface;
+use App\Services\DashboardService;
 
 class AdminController extends Controller
 {
     public function __construct(
-        private UserRepositoryInterface $userRepository,
-        private CourseRepositoryInterface $courseRepository,
-        private AcademicTitleRepositoryInterface $academicTitleRepository,
-        private CourseService $courseService,
-        private UserService $userService,
-        private StudentCourseRepositoryInterface $studentCourseRepository,
-        private StudentRepositoryInterface $studentRepository
-    ) {}
-
+    private UserRepositoryInterface $userRepository,
+    private CourseRepositoryInterface $courseRepository,
+    private AcademicTitleRepositoryInterface $academicTitleRepository,
+    private CourseService $courseService,
+    private UserService $userService,
+    private StudentCourseRepositoryInterface $studentCourseRepository,
+    private StudentRepositoryInterface $studentRepository,
+    private DashboardService $dashboardService,
+) {}
+    
     public function dashboard()
-    {
-        return view('admin.dashboard');
-    }
+{
+    $data = $this->dashboardService->getAdminDashboardData();
+
+    return view('admin.dashboard', $data);
+}
      public function loginHistory()
 {
     // Tüm 'auth' loglarını kronolojik sırada çekiyoruz
@@ -82,12 +86,10 @@ class AdminController extends Controller
         }
     }
 
-    // Hala çıkış yapmamış aktif oturumları da listeye ekleyelim
     foreach ($activeLogins as $active) {
         $sessions[] = $active;
     }
 
-    // En yeni oturum en üstte olacak şekilde ters sıralama
     $sessions = collect($sessions)->sortByDesc(function ($session) {
         return $session['login_at'] ?? $session['logout_at'];
     });
@@ -95,7 +97,6 @@ class AdminController extends Controller
     return view('admin.logs.login_history', compact('sessions'));
 }
 
-// Saniyeyi "X saat Y dk Z sn" formatına çeviren yardımcı metot
 private function formatDuration($seconds)
 {
     $hours = floor($seconds / 3600);

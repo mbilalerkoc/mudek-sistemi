@@ -8,4 +8,5 @@ interface CourseRepositoryInterface extends BaseRepositoryInterface
     public function getCoursesByTeacher($teacher);
     public function getCourseDetailsForForm($ders_id);
     public function allWithUsers();
+    public function getCourseCompletionData($courseId);
 }

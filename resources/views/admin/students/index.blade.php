@@ -28,35 +28,35 @@
             <div class="col-12 col-lg-8">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <span>Öğrenciler</span>
-                        <span class="badge bg-primary">{{ $students->count() }} öğrenci</span>
+                        <span>Öğrenci Listesi</span>
+                        <span class="badge bg-ktun-soft text-primary">{{ $students->count() }} öğrenci</span>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
-                            <table class="table table-hover mb-0">
+                            <table class="table table-hover align-middle mb-0">
                                 <thead>
                                     <tr>
                                         <th>Öğrenci No</th>
                                         <th>Ad Soyad</th>
-                                        <th class="text-center">İşlem</th>
+                                        <th class="text-end">İşlemler</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse ($students as $student)
                                         <tr>
-                                            <td><span class="badge bg-secondary">{{ $student->student_no }}</span></td>
-                                            <td><strong>{{ $student->name }} {{ $student->surname }}</strong></td>
-                                            <td class="text-center">
-                                                <a href="{{ route('admin.students.edit', $student->id) }}"
-                                                    class="btn btn-sm btn-warning me-1">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                                
-                                                {{-- Modern Sayfa İçi Modali Tetikleyen Buton --}}
-                                                <button type="button" class="btn btn-sm btn-danger delete-btn" 
-                                                        data-url="{{ route('admin.students.destroy', $student->id) }}">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
+                                            <td><span class="badge bg-ktun-soft text-primary">{{ $student->student_no }}</span></td>
+                                            <td><span class="fw-bold">{{ $student->name }} {{ $student->surname }}</span></td>
+                                            <td class="text-end">
+                                                <div class="d-flex justify-content-end gap-1">
+                                                    <a href="{{ route('admin.students.edit', $student->id) }}"
+                                                        class="btn btn-sm btn-outline-primary" title="Düzenle">
+                                                        <i class="bi bi-pencil-square"></i>
+                                                    </a>
+                                                    <button type="button" class="btn btn-sm btn-outline-danger delete-btn" 
+                                                            data-url="{{ route('admin.students.destroy', $student->id) }}" title="Sil">
+                                                        <i class="bi bi-trash-fill"></i>
+                                                    </button>
+                                                </div>
                                             </td>
                                         </tr>
                                     @empty
@@ -80,7 +80,7 @@
                             @csrf
 
                             <div class="mb-3">
-                                <label class="form-label">Öğrenci No <span class="text-danger">*</span></label>
+                                <label class="form-label ">Öğrenci No <span class="text-danger">*</span></label>
                                 <input type="text" name="student_no"
                                     class="form-control @error('student_no') is-invalid @enderror"
                                     value="{{ old('student_no') }}" placeholder="Örn: 2101001" required>
@@ -109,7 +109,7 @@
                                 @enderror
                             </div>
 
-                            <button type="submit" class="btn btn-primary w-100">
+                            <button type="submit" class="btn btn-primary-light w-100">
                                 <i class="bi bi-plus-circle me-1"></i> Öğrenci Kaydet
                             </button>
                         </form>
@@ -155,7 +155,7 @@
         </div>
     </section>
 
-    {{-- Modern Silme Onay Modali (Sayfa İçin Ortak) --}}
+    {{-- Modern Silme Onay Modali --}}
     <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true" style="background: rgba(0,0,0,0.5);">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">

@@ -40,4 +40,9 @@ class BaseRepository implements BaseRepositoryInterface
     {
         return $this->find($id)->delete();
     }
+
+    public function count()
+    {
+        return $this->model->count();
+    }
 }

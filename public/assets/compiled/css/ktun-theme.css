@@ -399,15 +399,15 @@ body {
 
 /* İndir / Mevcut Dosya Butonu (Turkuaz Temalı Outline) */
 .btn-outline-primary {
-    color: var(--ktun-primary) !important;
-    border-color: var(--ktun-primary) !important;
+    color: var(--ktun-primary-light) !important;
+    border-color: var(--ktun-primary-light) !important;
     background-color: transparent !important;
     transition: all 0.2s ease-in-out;
 }
 
 .btn-outline-primary:hover {
     color: var(--ktun-btn-text) !important;
-    background-color: var(--ktun-primary) !important;
+    background-color: var(--ktun-primary-light) !important;
     box-shadow: var(--ktun-btn-shadow) !important;
 }
 

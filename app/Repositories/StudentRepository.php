@@ -25,4 +25,12 @@ class StudentRepository extends BaseRepository implements StudentRepositoryInter
     {
         return $this->model->where('student_no', $studentNo)->firstOrFail();
     }
+    public function countByCourses($courseIds)
+{
+    return $this->model
+        ->whereHas('studentCourses', function ($query) use ($courseIds) {
+            $query->whereIn('course_id', $courseIds);
+        })
+        ->count();
+}
 }

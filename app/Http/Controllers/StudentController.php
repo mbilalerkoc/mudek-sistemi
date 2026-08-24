@@ -86,12 +86,10 @@ class StudentController extends Controller
     $failures = $import->failures();
     $errors   = $import->errors();
 
-    // Eğer validasyon hatası veya duplicate (unique) takılan satır varsa
     if ($failures->isNotEmpty() || count($errors) > 0) {
         $hatalar = [];
 
         foreach ($failures as $failure) {
-            // Örn: "Satır 4: Bu öğrenci numarası zaten sistemde kayıtlı."
             $hatalar[] = "Satır {$failure->row()}: " . implode(', ', $failure->errors());
         }
 

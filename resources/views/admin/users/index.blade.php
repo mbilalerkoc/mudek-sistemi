@@ -3,23 +3,23 @@
 @section('title', 'Kullanıcı ve Öğretmen Yönetimi')
 
 @section('content')
-    <div class="page-heading mb-4 d-flex justify-content-between align-items-center">
+    <div class="page-heading d-flex justify-content-between align-items-center">
         <div>
             <h3>Sistem Kullanıcıları</h3>
-            <p class="text-muted">Öğretmen, öğrenci ve admin hesaplarını buradan yönetebilirsiniz.</p>
+            <p class="text-subtitle text-muted">Öğretmen, öğrenci ve admin hesaplarını buradan yönetebilirsiniz.</p>
         </div>
-        <a href="{{ route('admin.users.ekle') }}" class="btn btn-primary">
+        <a href="{{ route('admin.users.ekle') }}" class="btn btn-primary-light">
             <i class="bi bi-person-plus-fill me-2"></i> Yeni Kullanıcı Ekle
         </a>
     </div>
 
-    <div class="page-content">
-
-        <div class="card shadow-sm">
+    <section class="section">
+        <div class="card">
+            <div class="card-header">Kullanıcı Listesi</div>
             <div class="card-body">
                 <div class="table-responsive">
                     <table class="table table-striped table-hover align-middle">
-                        <thead class="table-dark">
+                        <thead>
                             <tr>
                                 <th>Unvan / Ad Soyad</th>
                                 <th>E-posta</th>
@@ -31,33 +31,33 @@
                             @foreach ($users as $user)
                                 <tr>
                                     <td>
-                                        <strong>{{ optional($user->academicTitle)->title }} {{ $user->name }}
-                                            {{ $user->surname }}</strong>
+                                        <span class="fw-bold">{{ optional($user->academicTitle)->title }} {{ $user->name }} {{ $user->surname }}</span>
                                     </td>
                                     <td>{{ $user->email }}</td>
                                     <td>
                                         @if ($user->role === 'super_admin')
-                                            <span class="badge bg-danger">Süper Admin</span>
+                                            <span class="badge bg-ktun-soft text-danger">Süper Admin</span>
                                         @elseif($user->role === 'user')
-                                            <span class="badge bg-info">Kullanıcı</span>
+                                            <span class="badge bg-ktun-soft text-primary">Kullanıcı</span>
                                         @else
-                                            {{-- Eğer önceden kalma eski bir rol (student vb.) varsa doğrudan onu yazdırır, böylece fark edip silebilir veya güncelleyebilirsin --}}
                                             <span class="badge bg-secondary">{{ ucfirst($user->role) }}</span>
                                         @endif
                                     </td>
                                     <td class="text-end">
-                                        <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-warning">
-                                            <i class="bi bi-pencil-square"></i>
-                                        </a>
-                                        <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST"
-                                            class="d-inline-block"
-                                            onsubmit="return confirm('Bu kullanıcıyı silmek istediğinize emin misiniz?');">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-sm btn-danger">
-                                                <i class="bi bi-trash-fill"></i>
-                                            </button>
-                                        </form>
+                                        <div class="d-flex justify-content-end gap-1">
+                                            <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-outline-primary" title="Düzenle">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </a>
+                                            <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST"
+                                                  class="d-inline-block"
+                                                  onsubmit="return confirm('Bu kullanıcıyı silmek istediğinize emin misiniz?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Sil">
+                                                    <i class="bi bi-trash-fill"></i>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
@@ -66,5 +66,5 @@
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 @endsection

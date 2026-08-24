@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use App\Models\Course;
+use App\Models\StudentCourse;
 use App\Observers\CourseObserver;
+use App\Observers\StudentCourseObserver;
 use App\Listeners\LogSuccessfulLogin; 
 use App\Listeners\LogSuccessfulLogout;
 
@@ -31,6 +33,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
         Course::observe(CourseObserver::class);
+        StudentCourse::observe(StudentCourseObserver::class);
 
         Event::listen(Login::class, LogSuccessfulLogin::class);
         Event::listen(Logout::class, LogSuccessfulLogout::class);

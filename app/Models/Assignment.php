@@ -38,4 +38,8 @@ class Assignment extends Model
     {
         return $this->hasMany(AssignmentSubmission::class);
     }
+    public function examAssignments()
+    {
+        return $this->hasMany(ExamAssignment::class, 'assignment_id', 'id');
+    }
 }

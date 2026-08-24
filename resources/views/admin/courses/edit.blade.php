@@ -78,7 +78,7 @@
                         </div>
 
                         <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-primary-light">
                                 <i class="bi bi-check-circle me-1"></i> Güncelle
                             </button>
                             <a href="{{ route('admin.courses.index') }}" class="btn btn-secondary">

@@ -68,9 +68,6 @@ class AssignmentService
     {
         $assignment = $this->assignmentRepository->find($assignmentId);
 
-        /*
-         * Puan ve dosya yoksa teslim kaydı olmamalı.
-         */
         if (
             ($data['grade_score'] ?? null) === null &&
             empty($data['file_path'])
@@ -137,4 +134,47 @@ public function uploadAssignmentFile($file)
         'public'
     );
 }
+
+public function createAssignmentWithExamCheck(array $data, ?int $examId)
+    {
+        // 1. Ham Puan Modu Kontrolü
+        if ($examId) {
+            // Exam modelini ve ilişkili ödevleri repository/model üzerinden buluyoruz
+            $exam = \App\Models\Exam::with('examAssignments.assignment')->find($examId);
+            
+            if ($exam && ($exam->grading_type ?? 'weighted') === 'raw_sum') {
+                $examWeight = (int) ($exam->weight ?? 80);
+                $newAssignmentScore = (int) ($data['max_score'] ?? 0);
+                
+                $existingAssignmentsScore = 0;
+                if ($exam->examAssignments) {
+                    foreach ($exam->examAssignments as $ea) {
+                        if ($ea->assignment) {
+                            $existingAssignmentsScore += (int) ($ea->assignment->max_score ?? 0);
+                        }
+                    }
+                }
+
+                $totalSystemScore = $examWeight + $existingAssignmentsScore + $newAssignmentScore;
+
+                if ($totalSystemScore > 100) {
+                    // İş kuralı hatası fırlatıyoruz
+                    throw new \InvalidArgumentException(\App\Enums\Messages\ExamMessages::RAW_SUM_EXCEEDED->value);
+                }
+            }
+        }
+
+        // 2. Ödevi Oluştur
+        $assignment = $this->assignmentRepository->create($data);
+
+        // 3. Sınav ile İlişkilendir
+        if ($examId && $assignment) {
+            \App\Models\ExamAssignment::create([
+                'exam_id'       => $examId,
+                'assignment_id' => $assignment->id
+            ]);
+        }
+
+        return $assignment;
+    }
 }

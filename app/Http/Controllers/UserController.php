@@ -5,16 +5,20 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Repositories\Interfaces\CourseRepositoryInterface;
 use App\Enums\Messages\UserMessages;
+use App\Services\DashboardService;
 
 class UserController extends Controller
 {
-    public function __construct(
-        private CourseRepositoryInterface $courseRepository
-    ) {}
+   public function __construct(
+    private CourseRepositoryInterface $courseRepository,
+    private DashboardService $dashboardService
+) {}
 
     public function index()
     {
-        return view('user.dashboard');
+        $data = $this->dashboardService->getUserDashboardData(auth()->user());
+
+        return view('user.dashboard', $data);
     }
 
     public function profile()

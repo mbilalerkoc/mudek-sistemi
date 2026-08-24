@@ -85,3 +85,12 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 @endif
+
+{{-- HAM PUAN TOPLAMA KONTROL UYARISI --}}
+@if (session('raw_sum_warning'))
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i>
+        <strong>Puan Dağılımı Uyarısı:</strong> {{ session('raw_sum_warning') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif

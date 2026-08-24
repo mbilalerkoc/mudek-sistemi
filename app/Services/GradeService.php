@@ -64,27 +64,24 @@ class GradeService
                         $exam->id
                     );
 
-                $assignmentScore = $studentExam->assignment_score ?? 0;
-
-                $totalScore = (float) $examScore + (float) $assignmentScore;
-
                 if (!$studentExam) {
                     $studentExam = $this->studentExamRepository->create([
                         'student_course_id' => $studentCourse->id,
                         'exam_id' => $exam->id,
                         'exam_score' => $examScore,
                         'assignment_score' => 0,
-                        'total_score' => $totalScore,
+                        'total_score' => $examScore,
                     ]);
                 } else {
                     $this->studentExamRepository->update(
                         $studentExam->id,
                         [
                             'exam_score' => $examScore,
-                            'total_score' => $totalScore,
                         ]
                     );
                 }
+                $examService = app(\App\Services\ExamService::class);
+                $examService->skorlariYenidenHesapla($studentExam);
 
                 $updatedStudentCourseIds[$studentCourse->id] = $studentCourse->id;
             }
@@ -96,44 +93,59 @@ class GradeService
     }
 
     public function ortalamaHesaplaVeGuncelle($studentCourseId)
-{
-    $studentExams = $this->studentExamRepository
-        ->findByStudentCourseWithExam($studentCourseId);
+    {
+        $studentExams = $this->studentExamRepository
+            ->findByStudentCourseWithExam($studentCourseId);
 
-    $midterm = 0;
-    $final = 0;
-    $makeup = null;
+        $midterm = null;
+        $final = null;
+        $makeup = null;
 
-    foreach ($studentExams as $studentExam) {
-        if (!$studentExam->exam) {
-            continue;
+        foreach ($studentExams as $studentExam) {
+            if (!$studentExam->exam) {
+                continue;
+            }
+
+            $puan = $studentExam->total_score;
+
+            if ($studentExam->exam->exam_type === 'midterm' && $puan !== null) {
+                $midterm = (float) $puan;
+            } elseif ($studentExam->exam->exam_type === 'final' && $puan !== null) {
+                $final = (float) $puan;
+            } elseif ($studentExam->exam->exam_type === 'makeup' && $puan !== null) {
+                $makeup = (float) $puan;
+            }
         }
 
-        if ($studentExam->exam->exam_type === 'midterm') {
-            $midterm = $studentExam->exam_score ?? 0;
-        } elseif ($studentExam->exam->exam_type === 'final') {
-            $final = $studentExam->exam_score ?? 0;
-        } elseif ($studentExam->exam->exam_type === 'makeup') {
-            $makeup = $studentExam->exam_score ?? null;
+        // KURAL: Final veya Bütünleme notu girilmediyse ortalama ve durum hesaplanmaz!
+        if (is_null($final) && is_null($makeup)) {
+            $this->studentCourseRepository->update(
+                $studentCourseId,
+                [
+                    'average' => null,
+                    'status'  => null,
+                ]
+            );
+            return;
         }
+
+        // Hesaplama (Bütünleme varsa bütünleme finalin yerine geçer)
+        if (!is_null($makeup)) {
+            $ortalama = ($midterm ?? 0) * 0.4 + ($makeup * 0.6);
+        } else {
+            $ortalama = ($midterm ?? 0) * 0.4 + ($final * 0.6);
+        }
+
+        $durum = $ortalama >= 50 ? 'passed' : 'failed';
+
+        $this->studentCourseRepository->update(
+            $studentCourseId,
+            [
+                'average' => round($ortalama, 2),
+                'status'  => $durum,
+            ]
+        );
     }
-
-    if (!is_null($makeup)) {
-        $ortalama = ($midterm * 0.4) + ($makeup * 0.6);
-    } else {
-        $ortalama = ($midterm * 0.4) + ($final * 0.6);
-    }
-
-    $durum = $ortalama >= 50 ? 'passed' : 'failed';
-
-    $this->studentCourseRepository->update(
-        $studentCourseId,
-        [
-            'average' => round($ortalama, 2),
-            'status' => $durum,
-        ]
-    );
-}
 
 public function harfNotuHesapla($ortalama): string
 {
