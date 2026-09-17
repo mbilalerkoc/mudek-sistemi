@@ -11,8 +11,8 @@ use Illuminate\Support\Facades\Route;
 
 // Ana sayfa
 Route::get('/', function () {
-    return redirect()->route('login');
-});
+    return view('welcome');
+})->name('welcome');
 
 // Auth
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
