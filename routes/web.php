@@ -9,10 +9,14 @@ use App\Http\Controllers\AssignmentController;
 use App\Http\Controllers\ExamController;
 use Illuminate\Support\Facades\Route;
 
-// Ana sayfa
-Route::get('/', function () {
+// Welcome page
+Route::get('/welcome', function () {
     return view('welcome');
 })->name('welcome');
+
+Route::get('/', function () {
+    return redirect()->route('welcome');
+});
 
 // Auth
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');

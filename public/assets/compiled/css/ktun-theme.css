@@ -660,3 +660,46 @@ body.welcome-page, .welcome-page body, .welcome-page html {
     box-shadow: 0 10px 20px rgba(241, 85, 108, 0.3);
     color: var(--ktun-btn-text) !important;
 }
+
+/* 1. Sidebar ve Ana İçerik Genişliği (Birbiriyle Eşit Olmalı) */
+#ktun-sidebar {
+    width: 280px !important; /* 300px biraz fazla gelmiş olabilir, 280px idealdir */
+    top: 100px !important;
+}
+#ktun-main {
+    margin-left: 280px !important;
+    padding-top: 70px !important;
+}
+
+/* 2. EN ÖNEMLİ KISIM: Üst lacivert logo alanı da tam 280px olmalı */
+.ktun-navbar-left {
+    width: 280px !important;
+    justify-content: space-between !important; /* Logoyu sola, hamburger butonu sağa yaslar */
+    padding-right: 15px !important; /* Hamburger butonun tam çizgiye yapışmasını engeller */
+}
+
+/* 3. Menü İçi Yazı ve Boşluk Oranları */
+.ktun-menu-item a {
+    font-size: 1.05rem !important;
+    padding: 12px 20px !important;
+}
+.ktun-menu-title {
+    font-size: 0.90rem !important;
+}
+.ktun-sidebar-profile {
+    padding: 20px !important;
+}
+
+/* 4. Navbar (Üst Menü) Yüksekliği */
+.ktun-navbar {
+    height: 100px !important; /* 80px biraz kaba durmuş olabilir, 70px daha kibar duracaktır */
+}
+.ktun-navbar-inner {
+    height: 100% !important;
+}
+.ktun-nav-username {
+    font-size: 1.05rem !important;
+}
+.logo-large, .logo-small {
+    height: 45px !important;
+}

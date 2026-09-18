@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KTÜN - Proje Yönetim Paneli</title>
+    <title>KTÜN - Proje Yönetim Paneli</title>  
     <link rel="stylesheet" href="{{ asset('assets/compiled/css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/compiled/css/ktun-theme.css') }}">
 </head>
